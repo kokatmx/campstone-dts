@@ -126,8 +126,14 @@ class PositionController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Position $position)
+    public function destroy(Position $position, $id)
     {
-        //
+        $position = Position::find($id);
+        if ($position) {
+            $position->delete();
+            return redirect()->route('position.index')->with('success', 'Data berhasil dihapus');
+        } else {
+            return redirect()->route('position.index')->with('success', 'Data gagal dihapus');
+        }
     }
 }

@@ -138,7 +138,7 @@ class DepartmentController extends Controller
             $department->delete();
             return redirect()->route('department.index')->with('success', 'Data departemen berhasil dihapus');
         } else {
-            return redirect()->route('department.index')->with('success', 'Data departemen berhasil dihapus');
+            return redirect()->route('department.index')->with('success', 'Data departemen gagal dihapus');
         }
     }
 }

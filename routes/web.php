@@ -3,6 +3,7 @@
 use App\Http\Controllers\DepartmentController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\LeaveController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SalaryController;
 use App\Http\Controllers\ScheduleController;
@@ -63,6 +64,17 @@ Route::prefix('department')->group(function () {
     Route::get('/{id}/edit', [DepartmentController::class, 'edit'])->name('department.edit');
     Route::put('/{id}', [DepartmentController::class, 'update'])->name('department.update');
     Route::delete('/{id}', [DepartmentController::class, 'destroy'])->name('department.destroy'); // Perubahan di sini
+});
+
+Route::prefix('position')->group(function () {
+    Route::get('/', action: [PositionController::class, 'index'])->name('position.index');
+    Route::post('/list', [PositionController::class, 'list'])->name('position.list');
+    Route::get('/create', [PositionController::class, 'create'])->name('position.create');
+    Route::post('/', [PositionController::class, 'store'])->name('position.store');
+    Route::get('/{id}', [PositionController::class, 'show'])->name('position.show');
+    Route::get('/{id}/edit', [PositionController::class, 'edit'])->name('position.edit');
+    Route::put('/{id}', [PositionController::class, 'update'])->name('position.update');
+    Route::delete('/{id}', [PositionController::class, 'destroy'])->name('position.destroy'); // Perubahan di sini
 });
 
 Route::prefix('leave')->group(function () {

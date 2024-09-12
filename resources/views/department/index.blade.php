@@ -4,7 +4,7 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a class="btn btn-sm btn-primary mt-1" href="{{ route('salary.create') }}">Tambah</a>
+                <a class="btn btn-sm btn-primary mt-1" href="{{ route('department.create') }}">Tambah</a>
             </div>
         </div>
         <div class="card-body">
@@ -14,15 +14,12 @@
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-            <table class="table table-bordered table-striped table-hover table-sm" id="table_salary">
+            <table class="table table-bordered table-striped table-hover table-sm" id="table_department">
                 <thead>
                     <tr>
                         <th>Nomor</th>
-                        <th>Nama</th>
-                        <th>Gaji Pokok</th>
-                        <th>Tunjangan</th>
-                        <th>Potongan</th>
-                        <th>Total Gaji</th>
+                        <th>Nama Departemen</th>
+                        <th>Deskripsi</th>
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -38,11 +35,11 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            $('#table_salary').DataTable({
+            $('#table_department').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ url('salary/list') }}",
+                    url: "{{ url('department/list') }}",
                     type: "POST",
                     data: function(d) {
                         d._token = "{{ csrf_token() }}";
@@ -55,31 +52,13 @@
                         orderable: true,
                         searchable: false,
                     }, {
-                        data: 'employee.name',
+                        data: 'name',
                         className: "",
                         orderable: true,
                         searchable: true
                     },
                     {
-                        data: 'basic_salary',
-                        className: "",
-                        orderable: true,
-                        searchable: true
-                    },
-                    {
-                        data: 'allowances',
-                        className: "",
-                        orderable: true,
-                        searchable: true
-                    },
-                    {
-                        data: 'deductions',
-                        className: "",
-                        orderable: true,
-                        searchable: true
-                    },
-                    {
-                        data: 'total_salary',
+                        data: 'description',
                         className: "",
                         orderable: true,
                         searchable: true

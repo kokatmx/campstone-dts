@@ -29,14 +29,14 @@ class SalaryController extends Controller
     // salary list
     public function list(Request $request)
     {
-        $salary = Salary::with('employee')->get()
+        $salary = Salary::with('employee')
             ->select('id_salary', 'id_employee', 'basic_salary', 'allowances', 'deductions', 'total_salary');
 
         return DataTables::of($salary)
             ->addIndexColumn()
             ->addColumn('employee.name', function ($salary) {
                 // Check if position relation exists
-                return $salary->employee ? $salary->employee->name : 'Tidak ada karyawan';
+                return $salary->employee ? $salary->employee->name : 'N/A';
             })
             ->addColumn('aksi', function ($salary) {
                 $btn  = '<div class="d-flex align-items-center justify-content-center">';

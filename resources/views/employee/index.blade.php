@@ -92,6 +92,13 @@
                             searchable: false
                         }
                     ],
+                    columnDefs: [{
+                        targets: 0,
+                        title: 'Nomor',
+                        data: 'DT_RowIndex',
+                        orderable: false,
+                        searchable: false
+                    }, ],
                     dom: 'Bfrtip',
                     buttons: [
                         'copy', 'csv', 'excel', 'pdf', 'print'

@@ -30,21 +30,21 @@ class Employee extends Model
     }
     public function salary()
     {
-        return $this->hasMany(Salary::class);
+        return $this->hasMany(Salary::class, 'id_salary',  'id_salary');
     }
 
     public function schedule()
     {
-        return $this->hasMany(Schedule::class);
+        return $this->hasMany(Schedule::class, 'id_schedule');
     }
 
     public function leave()
     {
-        return $this->hasMany(Leave::class);
+        return $this->hasMany(Leave::class, 'id_leave');
     }
 
     public function attendance()
     {
-        return $this->hasMany(Attendance::class);
+        return $this->hasMany(Attendance::class, 'id_attendance');
     }
 }

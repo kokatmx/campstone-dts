@@ -8,8 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Schedule extends Model
 {
     use HasFactory;
+    protected $table = 'schedules';
+    protected $primaryKey = 'id_schedule'; // Menentukan primary key
+    // public $incrementing = false;
+
+    protected $fillable = [
+        'id_schedule',
+        'id_employee',
+        'date',
+        'shift',
+    ];
     public function employee()
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(Employee::class, 'id_employee', 'id_employee');
     }
 }

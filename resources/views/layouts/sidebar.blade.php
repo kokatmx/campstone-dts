@@ -14,59 +14,63 @@
     <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <li class="nav-item">
-                <a href="{{ url('/') }}" class="nav-link  {{ $activeMenu == 'dashboard' ? 'active' : '' }} ">
+                <a href="{{ url('/admin/anuu') }}" class="nav-link  {{ $activeMenu == 'dashboard' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     <p>Dashboard</p>
                 </a>
             </li>
             <li class="nav-header">Data Karyawan</li>
             <li class="nav-item">
-                <a href="{{ url('/employee') }}" class="nav-link {{ $activeMenu == 'employee' ? 'active' : '' }} ">
+                <a href="{{ url('/admin/employee') }}"
+                    class="nav-link {{ $activeMenu == 'employee' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-users"></i>
                     <p>Data Karyawan</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/department') }}" class="nav-link {{ $activeMenu == 'department' ? 'active' : '' }} ">
+                <a href="{{ url('/admin/department') }}"
+                    class="nav-link {{ $activeMenu == 'department' ? 'active' : '' }} ">
                     <i class="nav-icon far fa-building"></i>
                     <p>Departemen</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/position') }}" class="nav-link {{ $activeMenu == 'position' ? 'active' : '' }} ">
+                <a href="{{ url('/admin/position') }}"
+                    class="nav-link {{ $activeMenu == 'position' ? 'active' : '' }} ">
                     {{-- <i class="nav-icon fas fa-network-wired"></i> --}}
                     <i class="nav-icon fas fa-user-tie"></i>
                     <p>Posisi</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/schedule') }}" class="nav-link {{ $activeMenu == 'schedule' ? 'active' : '' }} ">
+                <a href="{{ url('/admin/schedule') }}"
+                    class="nav-link {{ $activeMenu == 'schedule' ? 'active' : '' }} ">
                     <i class="nav-icon far fa-calendar-alt"></i>
                     <p>Jadwal</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/salary') }}" class="nav-link {{ $activeMenu == 'salary' ? 'active' : '' }} ">
+                <a href="{{ url('/admin/salary') }}" class="nav-link {{ $activeMenu == 'salary' ? 'active' : '' }} ">
                     <i class="nav-icon far fa-money-bill-alt"></i>
                     <p>Gaji</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/attendance') }}"
+                <a href="{{ url('/admin/attendance') }}"
                     class="nav-link {{ $activeMenu == 'attendance' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-calendar-check"></i>
                     <p>Kehadiran</p>
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/leave') }}" class="nav-link {{ $activeMenu == 'leave' ? 'active' : '' }} ">
+                <a href="{{ url('/admin/leave') }}" class="nav-link {{ $activeMenu == 'leave' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-umbrella-beach"></i>
                     <p>Cuti</p>
                 </a>
             </li>
             <li class="nav-header">Data User</li>
             <li class="nav-item">
-                <a href="{{ url('/user') }}" class="nav-link {{ $activeMenu == 'user' ? 'active' : '' }}">
+                <a href="{{ url('/admin/user') }}" class="nav-link {{ $activeMenu == 'user' ? 'active' : '' }}">
                     <i class="nav-icon far fa-user"></i>
                     <p>Data User</p>
                 </a>

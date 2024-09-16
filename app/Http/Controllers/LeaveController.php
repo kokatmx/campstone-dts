@@ -12,7 +12,16 @@ class LeaveController extends Controller
      */
     public function index()
     {
-        //
+        $breadcrumb = (object)[
+            'title' => 'Data Kehadiran Karyawan',
+            'list' => ['Home', 'Kehadiran'],
+        ];
+        $page = (object)[
+            'title' => 'Data kehadiran karyawan yang tersimpan dalam sistem',
+        ];
+        $leave = Leave::with('employee')->get();
+        $activeMenu = 'leave';
+        return view('admin.leave.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'leave' => $leave, 'activeMenu' => $activeMenu]);
     }
 
     /**

@@ -22,7 +22,7 @@ class PositionController extends Controller
             'title' => 'Data posisi yang terdaftar di sistem',
         ];
         $activeMenu = 'position';
-        return view('position.index', ['breadcrumb' => $breadcrumb, 'position' => $position, 'activeMenu' => $activeMenu, 'page' => $page]);
+        return view('admin.position.index', ['breadcrumb' => $breadcrumb, 'position' => $position, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
 
     public function list()
@@ -32,9 +32,9 @@ class PositionController extends Controller
             ->addIndexColumn()
             ->addColumn('aksi', function ($position) {
                 $btn  = '<div class="d-flex align-items-center justify-content-center">';
-                $btn .= '<a href="' . url('/position/' . $position->id_position) . '" class="btn btn-info btn-sm m-1" title="Lihat Detail"><i class="far fa-eye"></i></a>';
-                $btn .= '<a href="' . url('/position/' . $position->id_position . '/edit') . '" class="btn btn-warning btn-sm m-1" title="Edit Data"><i class="fas fa-pencil-alt"></i></a>';
-                $btn .= '<form method="POST" action="' . url('/position/' . $position->id_position) . '" onsubmit="return confirm(\'Apakah Anda yakin menghapus data ini?\');" class="d-inline">';
+                $btn .= '<a href="' . url('/admin/position/' . $position->id_position) . '" class="btn btn-info btn-sm m-1" title="Lihat Detail"><i class="far fa-eye"></i></a>';
+                $btn .= '<a href="' . url('/admin/position/' . $position->id_position . '/edit') . '" class="btn btn-warning btn-sm m-1" title="Edit Data"><i class="fas fa-pencil-alt"></i></a>';
+                $btn .= '<form method="POST" action="' . url('/admin/position/' . $position->id_position) . '" onsubmit="return confirm(\'Apakah Anda yakin menghapus data ini?\');" class="d-inline">';
                 $btn .= csrf_field() . method_field('DELETE');
                 $btn .= '<button type="submit" class="btn btn-danger btn-sm m-1" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
                 $btn .= '</form>';
@@ -59,7 +59,7 @@ class PositionController extends Controller
         ];
         $position = Position::all();
         $activeMenu = 'position';
-        return view('position.create', ['breadcrumb' => $breadcrumb, 'position' => $position, 'activeMenu' => $activeMenu, 'page' => $page]);
+        return view('admin.position.create', ['breadcrumb' => $breadcrumb, 'position' => $position, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
 
     /**
@@ -71,7 +71,7 @@ class PositionController extends Controller
         $position->name = $request->input('name');
         $position->description = $request->input('description');
         $position->save();
-        return redirect()->route('position.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('admin.position.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -88,7 +88,7 @@ class PositionController extends Controller
             'title' => 'Detail data posisi',
         ];
         $activeMenu = 'position';
-        return view('position.show', ['breadcrumb' => $breadcrumb, 'position' => $position, 'activeMenu' => $activeMenu, 'page' => $page]);
+        return view('admin.position.show', ['breadcrumb' => $breadcrumb, 'position' => $position, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
 
     /**
@@ -105,7 +105,7 @@ class PositionController extends Controller
             'title' => 'Edit data posisi',
         ];
         $activeMenu = 'position';
-        return view('position.edit', ['breadcrumb' => $breadcrumb, 'position' => $position, 'activeMenu' => $activeMenu, 'page' => $page]);
+        return view('admin.position.edit', ['breadcrumb' => $breadcrumb, 'position' => $position, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
 
     /**
@@ -120,7 +120,7 @@ class PositionController extends Controller
         $position->name = $request->input('name');
         $position->description = $request->input('description');
         $position->save();
-        return redirect()->route('position.index')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('admin.position.index')->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -131,9 +131,9 @@ class PositionController extends Controller
         $position = Position::find($id);
         if ($position) {
             $position->delete();
-            return redirect()->route('position.index')->with('success', 'Data berhasil dihapus');
+            return redirect()->route('admin.position.index')->with('success', 'Data berhasil dihapus');
         } else {
-            return redirect()->route('position.index')->with('success', 'Data gagal dihapus');
+            return redirect()->route('admin.position.index')->with('success', 'Data gagal dihapus');
         }
     }
 }

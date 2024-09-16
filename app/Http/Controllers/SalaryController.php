@@ -23,7 +23,7 @@ class SalaryController extends Controller
         ];
         $salary = Salary::with('employee')->get();
         $activeMenu = 'salary';
-        return view('salary.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'salary' => $salary, 'activeMenu' => $activeMenu]);
+        return view('admin.salary.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'salary' => $salary, 'activeMenu' => $activeMenu]);
     }
 
     // salary list
@@ -40,9 +40,9 @@ class SalaryController extends Controller
             })
             ->addColumn('aksi', function ($salary) {
                 $btn  = '<div class="d-flex align-items-center justify-content-center">';
-                $btn .= '<a href="' . url('/salary/' . $salary->id_salary) . '" class="btn btn-info btn-sm m-1" title="Lihat Detail"><i class="far fa-eye"></i></a>';
-                $btn .= '<a href="' . url('/salary/' . $salary->id_salary . '/edit') . '" class="btn btn-warning btn-sm m-1" title="Edit Data"><i class="fas fa-pencil-alt"></i></a>';
-                $btn .= '<form method="POST" action="' . url('/salary/' . $salary->id_salary) . '" onsubmit="return confirm(\'Apakah Anda yakin menghapus data ini?\');" class="d-inline">';
+                $btn .= '<a href="' . url('/admin/salary/' . $salary->id_salary) . '" class="btn btn-info btn-sm m-1" title="Lihat Detail"><i class="far fa-eye"></i></a>';
+                $btn .= '<a href="' . url('/admin/salary/' . $salary->id_salary . '/edit') . '" class="btn btn-warning btn-sm m-1" title="Edit Data"><i class="fas fa-pencil-alt"></i></a>';
+                $btn .= '<form method="POST" action="' . url('/admin/salary/' . $salary->id_salary) . '" onsubmit="return confirm(\'Apakah Anda yakin menghapus data ini?\');" class="d-inline">';
                 $btn .= csrf_field() . method_field('DELETE');
                 $btn .= '<button type="submit" class="btn btn-danger btn-sm m-1" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
                 $btn .= '</form>';
@@ -68,7 +68,7 @@ class SalaryController extends Controller
         ];
         $employees = Employee::all();
         $activeMenu = 'salary';
-        return view('salary.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'employees' => $employees, 'activeMenu' => $activeMenu]);
+        return view('admin.salary.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'employees' => $employees, 'activeMenu' => $activeMenu]);
     }
 
     /**
@@ -84,7 +84,7 @@ class SalaryController extends Controller
         $salary->total_salary = $salary->basic_salary + $salary->allowances - $salary->deductions;
         $salary->save();
 
-        return redirect()->route('salary.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('admin.salary.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -104,7 +104,7 @@ class SalaryController extends Controller
             'title' => 'Detail Gaji Karyawan',
         ];
         $activeMenu = 'salary';
-        return view('salary.show', ['salary' => $salary, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('admin.salary.show', ['salary' => $salary, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
     /**
@@ -115,7 +115,7 @@ class SalaryController extends Controller
         $salary = Salary::with('employee')->find($id);
 
         if (!$salary) {
-            return redirect()->route('salary.index')->with('error', 'Data gaji tidak ditemukan');
+            return redirect()->route('admin.salary.index')->with('error', 'Data gaji tidak ditemukan');
         }
         $breadcrumb = (object)[
             'title' => 'Tambah Data Gaji Karyawan',
@@ -126,7 +126,7 @@ class SalaryController extends Controller
         ];
         $employees = Employee::all();
         $activeMenu = 'salary';
-        return view('salary.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'salary' => $salary, 'employees' => $employees, 'activeMenu' => $activeMenu]);
+        return view('admin.salary.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'salary' => $salary, 'employees' => $employees, 'activeMenu' => $activeMenu]);
     }
 
     /**
@@ -137,7 +137,7 @@ class SalaryController extends Controller
         $salary = Salary::find($id);
 
         if (!$salary) {
-            return redirect()->route('salary.index')->with('error', 'Data gaji tidak ditemukan');
+            return redirect()->route('admin.salary.index')->with('error', 'Data gaji tidak ditemukan');
         }
 
         $employee_name = $request->input('name');
@@ -154,7 +154,7 @@ class SalaryController extends Controller
         $salary->total_salary = $salary->basic_salary + $salary->allowances - $salary->deductions;
         $salary->save();
 
-        return redirect()->route('salary.index')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('admin.salary.index')->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -165,9 +165,9 @@ class SalaryController extends Controller
         $salary = Salary::find($id);
         if ($salary) {
             $salary->delete();
-            return redirect()->route('salary.index')->with('success', 'Data gaji karyawan berhasil dihapus');
+            return redirect()->route('admin.salary.index')->with('success', 'Data gaji karyawan berhasil dihapus');
         } else {
-            return redirect()->route('salary.index')->with('error', 'Data gaji karyawan tidak ditemukan');
+            return redirect()->route('admin.salary.index')->with('error', 'Data gaji karyawan tidak ditemukan');
         }
     }
 }

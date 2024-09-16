@@ -10,10 +10,61 @@
         <li class="nav-item d-none d-sm-inline-block">
             <a href="#" class="nav-link">Contact</a>
         </li>
+        <li class="nav-item d-none d-sm-inline-block">
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+            <a href="#" class="nav-link"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                Logout
+            </a>
+        </li>
+
     </ul>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+        {{-- account --}}
+        <!-- User Account Dropdown (AdminLTE style) -->
+        <li class="nav-item dropdown user-menu">
+            <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
+                <img src="{{ asset('adminlte/dist/img/user2-160x160.jpg') }}" class="user-image img-circle elevation-2"
+                    alt="User Image">
+                <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                <!-- User image -->
+                <li class="user-header bg-primary">
+                    <img src="{{ asset('adminlte/dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2"
+                        alt="User Image">
+
+                    <p>
+                        {{ Auth::user()->name }} - {{ Auth::user()->role ?? 'User Role' }}
+                        <small>Member since {{ Auth::user()->created_at->format('M. Y') }}</small>
+                    </p>
+                </li>
+                <!-- Menu Body -->
+                <li class="user-body">
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <a href="{{ route('profile.edit') }}" class="btn btn-default btn-flat">Profile</a>
+                        </div>
+                    </div>
+                </li>
+                <!-- Menu Footer-->
+                <li class="user-footer">
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button class="btn btn-default btn-flat float-right"
+                            onclick="event.preventDefault(); this.closest('form').submit();">
+                            {{ __('Log Out') }}
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </li>
+
+
         <!-- Navbar Search -->
         <li class="nav-item">
             <a class="nav-link" data-widget="navbar-search" href="#" role="button">
@@ -36,6 +87,8 @@
                 </form>
             </div>
         </li>
+
+
 
         <!-- Messages Dropdown Menu -->
         <li class="nav-item dropdown">

@@ -21,42 +21,42 @@ class EmployeeController extends Controller
         ];
         $employees = Employee::with('position', 'department')->get();
         $activeMenu = 'employee';
-        return view('employee.index', ['breadcrumb' => $breadcrumb, 'employee' => $employees, 'activeMenu' => $activeMenu, 'page' => $page]);
+        return view('admin.employee.index', ['breadcrumb' => $breadcrumb, 'employee' => $employees, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
     public function list(Request $request)
     {
-        // Load the employee data and specify only the needed fields
-        $employees = Employee::with('position', 'department')
-            ->select('id_employee', 'name', 'email', 'address', 'gender', 'no_hp', 'id_position', 'id_department');
+        try {
+            $employees = Employee::with('position', 'department')
+                ->select('id_employee', 'name', 'email', 'address', 'gender', 'no_hp', 'id_position', 'id_department');
 
-        // Apply any filters if needed
-        // (e.g. if you want to filter by position or department)
-
-        return DataTables::of($employees)
-            ->addIndexColumn()
-            ->addColumn('position.name', function ($employee) {
-                // Check if position relation exists
-                return $employee->position ? $employee->position->name : 'N/A';
-            })
-            ->addColumn('department.name', function ($employee) {
-                // Check if department relation exists
-                return $employee->department ? $employee->department->name : 'N/A';
-            })
-            ->addColumn('aksi', function ($employee) {
-                $btn  = '<div class="d-flex align-items-center justify-content-center">';
-                $btn .= '<a href="' . url('/employee/' . $employee->id_employee) . '" class="btn btn-info btn-sm m-1" title="Lihat Detail"><i class="far fa-eye"></i></a>';
-                $btn .= '<a href="' . url('/employee/' . $employee->id_employee . '/edit') . '" class="btn btn-warning btn-sm m-1" title="Edit Data"><i class="fas fa-pencil-alt"></i></a>';
-                $btn .= '<form method="POST" action="' . url('/employee/' . $employee->id_employee) . '" onsubmit="return confirm(\'Apakah Anda yakin menghapus data ini?\');" class="d-inline">';
-                $btn .= csrf_field() . method_field('DELETE');
-                $btn .= '<button type="submit" class="btn btn-danger btn-sm m-1" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
-                $btn .= '</form>';
-                $btn .= '</div>';
-                return $btn;
-            })
-
-            ->rawColumns(['aksi'])
-            ->make(true);
+            return DataTables::of($employees)
+                ->addIndexColumn()
+                ->addColumn('position.name', function ($employee) {
+                    return $employee->position ? $employee->position->name : 'N/A';
+                })
+                ->addColumn('department.name', function ($employee) {
+                    return $employee->department ? $employee->department->name : 'N/A';
+                })
+                ->addColumn('aksi', function ($employee) {
+                    $btn  = '<div class="d-flex align-items-center justify-content-center">';
+                    $btn .= '<a href="' . url('/admin/employee/' . $employee->id_employee) . '" class="btn btn-info btn-sm m-1" title="Lihat Detail"><i class="far fa-eye"></i></a>';
+                    $btn .= '<a href="' . url('/admin/employee/' . $employee->id_employee . '/edit') . '" class="btn btn-warning btn-sm m-1" title="Edit Data"><i class="fas fa-pencil-alt"></i></a>';
+                    $btn .= '<form method="POST" action="' . url('/admin/employee/' . $employee->id_employee) . '" onsubmit="return confirm(\'Apakah Anda yakin menghapus data ini?\');" class="d-inline">';
+                    $btn .= csrf_field() . method_field('DELETE');
+                    $btn .= '<button type="submit" class="btn btn-danger btn-sm m-1" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
+                    $btn .= '</form>';
+                    $btn .= '</div>';
+                    return $btn;
+                })
+                ->rawColumns(['aksi'])
+                ->make(true);
+        } catch (\Exception $e) {
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);  // Untuk debugging, kirim error ke front-end
+        }
     }
+
     public function create()
     {
         $breadcrumb = (object)[
@@ -69,7 +69,7 @@ class EmployeeController extends Controller
         $activeMenu = 'employee';
         $positions = Position::all();
         $departments = Department::all();
-        return view('employee.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'positions' => $positions, 'departments' => $departments]);
+        return view('admin.employee.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'positions' => $positions, 'departments' => $departments]);
     }
 
     public function store(Request $request)
@@ -86,7 +86,7 @@ class EmployeeController extends Controller
         $employee->id_position = $request->input('id_position');
         $employee->id_department = $request->input('id_department');
         $employee->save();
-        return redirect()->route('employee.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('admin.employee.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     public function show($id)
@@ -103,7 +103,7 @@ class EmployeeController extends Controller
             'title' => 'Detail Data Karyawan',
         ];
         $activeMenu = 'employee';
-        return view('employee.show', ['employee' => $employee, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
+        return view('admin.employee.show', ['employee' => $employee, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu]);
     }
 
     public function edit($id)
@@ -122,7 +122,7 @@ class EmployeeController extends Controller
         $activeMenu = 'employee';
         $positions = Position::all();
         $departments = Department::all();
-        return view('employee.edit', ['employee' => $employee, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'positions' => $positions, 'departments' => $departments]);
+        return view('admin.employee.edit', ['employee' => $employee, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'positions' => $positions, 'departments' => $departments]);
     }
 
     public function update(Request $request, $id)
@@ -148,7 +148,7 @@ class EmployeeController extends Controller
         $employee->id_position = $request->input('id_position');
         $employee->id_department = $request->input('id_department');
         $employee->save();
-        return redirect()->route('employee.index')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('admin.employee.index')->with('success', 'Data berhasil diupdate');
     }
 
     public function destroy($id)
@@ -156,9 +156,9 @@ class EmployeeController extends Controller
         $employee = Employee::find($id);
         if ($employee) {
             $employee->delete();
-            return redirect()->route('employee.index')->with('success', 'Data karyawan berhasil dihapus');
+            return redirect()->route('admin.employee.index')->with('success', 'Data karyawan berhasil dihapus');
         } else {
-            return redirect()->route('employee.index')->with('error', 'Data karyawan tidak ditemukan');
+            return redirect()->route('admin.employee.index')->with('error', 'Data karyawan tidak ditemukan');
         }
     }
 }

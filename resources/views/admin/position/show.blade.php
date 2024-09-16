@@ -17,7 +17,7 @@
                     <td>{{ $position->description }}</td>
                 </tr>
             </table>
-            <a href="{{ route('position.index') }}" class="mt-5 btn btn-sm btn-default">Kembali</a>
+            <a href="{{ route('admin.position.index') }}" class="mt-5 btn btn-sm btn-default">Kembali</a>
         </div>
     </div>
 @endsection

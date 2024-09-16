@@ -4,7 +4,7 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a class="btn btn-sm btn-primary mt-1" href="{{ route('position.create') }}">Tambah</a>
+                <a class="btn btn-sm btn-primary mt-1" href="{{ route('admin.department.create') }}">Tambah</a>
             </div>
         </div>
         <div class="card-body">
@@ -14,11 +14,11 @@
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-            <table class="table table-bordered table-striped table-hover table-sm" id="table_position">
+            <table class="table table-bordered table-striped table-hover table-sm" id="table_department">
                 <thead>
                     <tr>
                         <th>Nomor</th>
-                        <th>Nama Posisi</th>
+                        <th>Nama Departemen</th>
                         <th>Deskripsi</th>
                         <th>Aksi</th>
                     </tr>
@@ -35,11 +35,11 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            $('#table_position').DataTable({
+            $('#table_department').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ url('position/list') }}",
+                    url: "{{ route('admin.department.list') }}",
                     type: "POST",
                     data: function(d) {
                         d._token = "{{ csrf_token() }}";

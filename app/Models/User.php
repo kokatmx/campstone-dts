@@ -15,11 +15,25 @@ class User extends Authenticatable
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
+     *
+     *
      */
+
+    // Definisikan enum untuk role jika diperlukan
+    const ROLE_USER = 'user';
+    const ROLE_ADMIN = 'admin';
+
+    public function isAdmin()
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    protected $primaryKey = 'id_user';
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role'
     ];
 
     /**

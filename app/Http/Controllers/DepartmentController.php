@@ -23,7 +23,7 @@ class DepartmentController extends Controller
         ];
         $department = Department::all();
         $activeMenu = 'department';
-        return view('department.index', ['breadcrumb' => $breadcrumb, 'department' => $department, 'activeMenu' => $activeMenu, 'page' => $page]);
+        return view('admin.department.index', ['breadcrumb' => $breadcrumb, 'department' => $department, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
 
     // list the department
@@ -34,9 +34,9 @@ class DepartmentController extends Controller
             ->addIndexColumn()
             ->addColumn('aksi', function ($department) {
                 $btn  = '<div class="d-flex align-items-center justify-content-center">';
-                $btn .= '<a href="' . url('/department/' . $department->id_department) . '" class="btn btn-info btn-sm m-1" title="Lihat Detail"><i class="far fa-eye"></i></a>';
-                $btn .= '<a href="' . url('/department/' . $department->id_department . '/edit') . '" class="btn btn-warning btn-sm m-1" title="Edit Data"><i class="fas fa-pencil-alt"></i></a>';
-                $btn .= '<form method="POST" action="' . url('/department/' . $department->id_department) . '" onsubmit="return confirm(\'Apakah Anda yakin menghapus data ini?\');" class="d-inline">';
+                $btn .= '<a href="' . url('/admin/department/' . $department->id_department) . '" class="btn btn-info btn-sm m-1" title="Lihat Detail"><i class="far fa-eye"></i></a>';
+                $btn .= '<a href="' . url('/admin/department/' . $department->id_department . '/edit') . '" class="btn btn-warning btn-sm m-1" title="Edit Data"><i class="fas fa-pencil-alt"></i></a>';
+                $btn .= '<form method="POST" action="' . url('/admin/department/' . $department->id_department) . '" onsubmit="return confirm(\'Apakah Anda yakin menghapus data ini?\');" class="d-inline">';
                 $btn .= csrf_field() . method_field('DELETE');
                 $btn .= '<button type="submit" class="btn btn-danger btn-sm m-1" title="Hapus Data"><i class="fas fa-trash-alt"></i></button>';
                 $btn .= '</form>';
@@ -62,7 +62,7 @@ class DepartmentController extends Controller
         ];
         $department = Department::all();
         $activeMenu = 'department';
-        return view('department.create', ['breadcrumb' => $breadcrumb, 'department' => $department, 'activeMenu' => $activeMenu, 'page' => $page]);
+        return view('admin.department.create', ['breadcrumb' => $breadcrumb, 'department' => $department, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
 
     /**
@@ -75,7 +75,7 @@ class DepartmentController extends Controller
         $department->description = $request->input('description');
         $department->save();
 
-        return redirect()->route('department.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('admin.department.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     /**
@@ -92,7 +92,7 @@ class DepartmentController extends Controller
             'title' => 'Detail data departemen',
         ];
         $activeMenu = 'department';
-        return view('department.show', ['breadcrumb' => $breadcrumb, 'department' => $department, 'activeMenu' => $activeMenu, 'page' => $page]);
+        return view('admin.department.show', ['breadcrumb' => $breadcrumb, 'department' => $department, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
 
     /**
@@ -109,7 +109,7 @@ class DepartmentController extends Controller
             'title' => 'Edit data departemen',
         ];
         $activeMenu = 'department';
-        return view('department.edit', ['breadcrumb' => $breadcrumb, 'department' => $department, 'activeMenu' => $activeMenu, 'page' => $page]);
+        return view('admin.department.edit', ['breadcrumb' => $breadcrumb, 'department' => $department, 'activeMenu' => $activeMenu, 'page' => $page]);
     }
 
     /**
@@ -125,7 +125,7 @@ class DepartmentController extends Controller
         $department->description = $request->input('description');
         $department->save();
 
-        return redirect()->route('department.index')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('admin.department.index')->with('success', 'Data berhasil diupdate');
     }
 
     /**
@@ -136,9 +136,9 @@ class DepartmentController extends Controller
         $department = Department::find($id);
         if ($department) {
             $department->delete();
-            return redirect()->route('department.index')->with('success', 'Data departemen berhasil dihapus');
+            return redirect()->route('admin.department.index')->with('success', 'Data departemen berhasil dihapus');
         } else {
-            return redirect()->route('department.index')->with('success', 'Data departemen gagal dihapus');
+            return redirect()->route('admin.department.index')->with('success', 'Data departemen gagal dihapus');
         }
     }
 }

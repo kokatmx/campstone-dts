@@ -7,7 +7,7 @@
             <div class="card-tools"></div>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('salary.update', $salary->id_salary) }}" class="form-horizontal">
+            <form method="POST" action="{{ route('admin.salary.update', $salary->id_salary) }}" class="form-horizontal">
                 @csrf
                 @method('PUT')
 
@@ -58,7 +58,7 @@
                     <label class="col-1 control-label col-form-label"></label>
                     <div class="col-11">
                         <button type="submit" class="btn btn-primary btn-sm">Update Data</button>
-                        <a class="btn btn-sm btn-default ml-1" href="{{ route('salary.index') }}">Kembali</a>
+                        <a class="btn btn-sm btn-default ml-1" href="{{ route('admin.salary.index') }}">Kembali</a>
                     </div>
                 </div>
             </form>

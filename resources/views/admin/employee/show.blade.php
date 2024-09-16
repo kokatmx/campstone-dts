@@ -10,34 +10,34 @@
             <table class="table table-bordered">
                 <tr>
                     <th>Nama</th>
-                    <td>{{ $salary->employee->name }}</td>
+                    <td>{{ $employee->name }}</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>{{ $employee->email }}</td>
+                </tr>
+                <tr>
+                    <th>Alamat</th>
+                    <td>{{ $employee->address }}</td>
+                </tr>
+                <tr>
+                    <th>Jenis Kelamin</th>
+                    <td>{{ $employee->gender }}</td>
+                </tr>
+                <tr>
+                    <th>No HP</th>
+                    <td>{{ $employee->no_hp }}</td>
                 </tr>
                 <tr>
                     <th>Posisi</th>
-                    <td>{{ $salary->employee->position->name }}</td>
+                    <td>{{ $employee->position->name }}</td>
                 </tr>
                 <tr>
-                    <th>Nama</th>
-                    <td>{{ $salary->employee->department->name }}</td>
-                </tr>
-                <tr>
-                    <th>Gaji Pokok</th>
-                    <td>{{ $salary->basic_salary }}</td>
-                </tr>
-                <tr>
-                    <th>Tunjangan</th>
-                    <td>{{ $salary->allowances }}</td>
-                </tr>
-                <tr>
-                    <th>Potongan</th>
-                    <td>{{ $salary->deductions }}</td>
-                </tr>
-                <tr>
-                    <th>Total Gaji</th>
-                    <td>{{ $salary->total_salary }}</td>
+                    <th>Departemen</th>
+                    <td>{{ $employee->department->name }}</td>
                 </tr>
             </table>
-            <a href="{{ route('salary.index') }}" class="mt-5 btn btn-sm btn-default">Kembali</a>
+            <a href="{{ route('admin.employee.index') }}" class="mt-5 btn btn-sm btn-default">Kembali</a>
         </div>
     </div>
 @endsection

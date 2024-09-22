@@ -7,7 +7,7 @@
             <div class="card-tools"></div>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('admin.schedule.update', $schedule->id_schedule) }}" class="form-horizontal">
+            <form method="POST" action="{{ route('admin.leave.update', $leave->id_leave) }}" class="form-horizontal">
                 @csrf
                 @method('PUT')
 
@@ -18,7 +18,7 @@
                             <option value="" disabled selected>-- Pilih Nama --</option>
                             @foreach ($employees as $employee)
                                 <option value="{{ $employee->id_employee }}"
-                                    {{ $schedule->id_employee == $employee->id_employee ? 'selected' : '' }}>
+                                    {{ $leave->id_employee == $employee->id_employee ? 'selected' : '' }}>
                                     {{ $employee->name }}
                                 </option>
                             @endforeach
@@ -27,32 +27,56 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-md-1 control-label col-form-label">Tanggal</label>
+                    <label class="col-md-1 control-label col-form-label">Tanggal Mulai</label>
                     <div class="col-md-11">
-                        <input type="date" class="form-control" id="date" name="date"
-                            value="{{ old('date', $schedule->date) }}" required>
-                        @error('date')
+                        <input type="date" class="form-control" id="start_date" name="start_date"
+                            value="{{ old('start_date', $leave->start_date) }}" required>
+                        @error('start_date')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
                     </div>
                 </div>
+
                 <div class="form-group row">
-                    <label for="shift" class="col-md-1 col-form-label control-label">Shift</label>
+                    <label class="col-md-1 control-label col-form-label">Tanggal Berakhir</label>
                     <div class="col-md-11">
-                        <select name="shift" id="shift" class="form-control">
-                            <option value="" disabled selected>-- Pilih Shift --</option>
-                            <option value="pagi" {{ $schedule->shift == 'pagi' ? 'selected' : '' }}>Pagi</option>
-                            <option value="siang" {{ $schedule->shift == 'siang' ? 'selected' : '' }}>Siang</option>
-                            <option value="malam" {{ $schedule->shift == 'malam' ? 'selected' : '' }}>Malam</option>
+                        <input type="date" class="form-control" id="end_date" name="end_date"
+                            value="{{ old('end_date', $leave->end_date) }}" required>
+                        @error('end_date')
+                            <small class="form-text text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-1 control-label col-form-label">Alasan</label>
+                    <div class="col-md-11">
+                        <input type="text" class="form-control" id="reason" name="reason"
+                            value="{{ old('reason', $leave->reason) }}" required>
+                        @error('reason')
+                            <small class="form-text text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="status" class="col-md-1 col-form-label control-label">Status</label>
+                    <div class="col-md-11">
+                        <select name="status" id="status" class="form-control">
+                            <option value="" disabled selected>-- Pilih Status --</option>
+                            <option value="approved" {{ $leave->status == 'approved' ? 'selected' : '' }}>Approved</option>
+                            <option value="rejected" {{ $leave->status == 'rejected' ? 'selected' : '' }}>Rejected</option>
+                            <option value="in_process" {{ $leave->status == 'in_process' ? 'selected' : '' }}>In Process
+                            </option>
                         </select>
-                        <small class="form-text text-muted">Silakan pilih shift</small>
+                        <small class="form-text text-muted">Silakan pilih status</small>
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-md-1 control-label col-form-label"></label>
                     <div class="col-md-11">
                         <button type="submit" class="btn btn-primary btn-sm">Update Data</button>
-                        <a class="btn btn-sm btn-default ml-1" href="{{ route('admin.schedule.index') }}">Kembali</a>
+                        <a class="btn btn-sm btn-default ml-1" href="{{ route('admin.leave.index') }}">Kembali</a>
                     </div>
                 </div>
             </form>

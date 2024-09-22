@@ -20,7 +20,6 @@ class AdminMiddleware
         if (Auth::check() && Auth::user()->role === User::ROLE_ADMIN) {
             return $next($request);
         }
-
-        return redirect()->route('dashboard')->with('error', 'You do not have admin access.'); // Redirect ke halaman lain jika bukan admin
+        return redirect()->route('dashboard')->with('error', 'Kamu tidak punya akses ke admin.');
     }
 }

@@ -51,7 +51,7 @@
                 },
                 columns: [{
                         data: 'DT_RowIndex',
-                        className: "text-center",
+                        className: "",
                         orderable: true,
                         searchable: false,
                     }, {

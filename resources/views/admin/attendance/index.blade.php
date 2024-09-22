@@ -22,6 +22,7 @@
                             <th>Nomor</th>
                             <th>Nama Karyawan</th>
                             <th>Tanggal</th>
+                            <th>Shift</th>
                             <th>Jam Masuk</th>
                             <th>Jam Keluar</th>
                             <th>Status</th>
@@ -83,6 +84,13 @@
                             }
                             return data;
                         }
+                    },
+                    {
+                        data: 'shift',
+                        name: 'shift',
+                        className: "",
+                        orderable: true,
+                        searchable: true
                     },
                     {
                         data: 'time_in',

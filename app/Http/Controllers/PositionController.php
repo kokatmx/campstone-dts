@@ -27,7 +27,7 @@ class PositionController extends Controller
 
     public function list()
     {
-        $positions = Position::select('id_position', 'name', 'description');
+        $positions = Position::select('id_position', 'name', 'description', 'basic_salary');
         return DataTables::of($positions)
             ->addIndexColumn()
             ->addColumn('aksi', function ($position) {
@@ -67,11 +67,15 @@ class PositionController extends Controller
      */
     public function store(Request $request)
     {
-        $position = new Position();
-        $position->name = $request->input('name');
-        $position->description = $request->input('description');
-        $position->save();
-        return redirect()->route('admin.position.index')->with('success', 'Data berhasil ditambahkan');
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'basic_salary' => 'required|numeric|min:0',
+        ]);
+
+        Position::create($request->all());
+
+        return redirect()->route('admin.position.index')->with('success', 'Position created successfully.');
     }
 
     /**
@@ -117,9 +121,14 @@ class PositionController extends Controller
         if (!$position) {
             return 'Data posisi tidak ditemukan';
         }
-        $position->name = $request->input('name');
-        $position->description = $request->input('description');
-        $position->save();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'basic_salary' => 'required|numeric|min:0',
+        ]);
+
+        $position->update($request->all());
         return redirect()->route('admin.position.index')->with('success', 'Data berhasil diupdate');
     }
 

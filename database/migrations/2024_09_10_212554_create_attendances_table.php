@@ -14,14 +14,17 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->id('id_attendance');
             $table->unsignedBigInteger('id_employee');
-            $table->date('date');
+            $table->unsignedBigInteger('id_schedule'); // Link to the schedule
+            $table->date('date'); // Automatically assigned based on the schedule
             $table->time('time_in');
             $table->time('time_out');
-            $table->enum('status', ['approved', 'rejected', 'in_process']);
-            $table->text('notes')->nullable(); // Menggunakan text dan nullable
+            $table->enum('status', ['tepat waktu', 'terlambat', 'lembur']);
+            $table->enum('shift', ['pagi', 'siang', 'malam'])->after('date');
+            $table->text('note')->nullable(); // Notes for the attendance status
             $table->timestamps();
 
             $table->foreign('id_employee')->references('id_employee')->on('employees')->onDelete('cascade')->index();
+            $table->foreign('id_schedule')->references('id_schedule')->on('schedules')->onDelete('cascade')->index();
         });
     }
 

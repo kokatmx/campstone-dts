@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Schedule;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -74,27 +76,36 @@ class ScheduleController extends Controller
      */
     public function store(Request $request)
     {
-        // Validasi data input
-        $validatedData = $request->validate([
-            'id_employee' => 'required|exists:employees,id_employee', // Memastikan karyawan valid
-            'date' => 'required|date', // Memastikan format tanggal
-            'shift' => 'required|in:pagi,siang,malam', // Memastikan shift adalah salah satu dari enum
+        $validated = $request->validate([
+            'id_employee' => 'required|exists:employees,id_employee',
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'shift' => 'required|in:pagi,siang,malam',
+            'note' => 'nullable|string',
         ]);
 
-        try {
-            // Membuat instance baru untuk Schedule menggunakan create
-            Schedule::create([
-                'id_employee' => $validatedData['id_employee'],
-                'date' => $validatedData['date'],
-                'shift' => $validatedData['shift'],
+        $schedule = Schedule::create($validated);
+
+        // Buat entri kehadiran untuk setiap hari dalam rentang jadwal
+        $currentDate = Carbon::parse($schedule->start_date);
+        $endDate = Carbon::parse($schedule->end_date);
+
+        while ($currentDate <= $endDate) {
+            Attendance::create([
+                'id_employee' => $schedule->id_employee,
+                'id_schedule' => $schedule->id_schedule,
+                'date' => $currentDate->toDateString(),
+                'shift' => $schedule->shift,
+                // Atur waktu default sesuai shift
+                'time_in' => $this->getDefaultTimeIn($schedule->shift),
+                'time_out' => $this->getDefaultTimeOut($schedule->shift),
+                'status' => 'tepat waktu', // Status default
             ]);
 
-            // Redirect dengan pesan sukses
-            return redirect()->route('admin.schedule.index')->with('success', 'Data berhasil ditambahkan');
-        } catch (\Exception $e) {
-            // Jika ada error saat menyimpan, tangani disini
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
+            $currentDate->addDay();
         }
+
+        return redirect()->route('admin.schedule.index')->with('success', 'Jadwal berhasil diperbarui');
     }
 
 
@@ -179,6 +190,30 @@ class ScheduleController extends Controller
             return redirect()->route('admin.schedule.index')->with('success', 'Data jadwal karyawan berhasil dihapus');
         } else {
             return redirect()->route('admin.schedule.index')->with('error', 'Data jadwal karyawan tidak ditemukan');
+        }
+    }
+
+    private function getDefaultTimeIn($shift)
+    {
+        switch ($shift) {
+            case 'pagi':
+                return '07:00:00';
+            case 'siang':
+                return '12:00:00';
+            case 'malam':
+                return '18:00:00';
+        }
+    }
+
+    private function getDefaultTimeOut($shift)
+    {
+        switch ($shift) {
+            case 'pagi':
+                return '12:00:00';
+            case 'siang':
+                return '18:00:00';
+            case 'malam':
+                return '23:00:00';
         }
     }
 }

@@ -19,8 +19,8 @@
                     @csrf
                     @method('PUT')
                     <div class="form-group row">
-                        <label class="col-1 control-label col-form-label">Nama</label>
-                        <div class="col-11">
+                        <label class="col-md-2 control-label col-form-label">Nama</label>
+                        <div class="col-md-10">
                             <input type="text" class="form-control" id="name" name="name"
                                 value="{{ $employee->name }}" required>
                             @error('name')
@@ -29,8 +29,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-1 control-label col-form-label">Email</label>
-                        <div class="col-11">
+                        <label class="col-md-2 control-label col-form-label">Email</label>
+                        <div class="col-md-10">
                             <input type="email" class="form-control" id="email" name="email"
                                 value="{{ $employee->email }}" required>
                             @error('email')
@@ -39,8 +39,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-1 control-label col-form-label">Alamat</label>
-                        <div class="col-11">
+                        <label class="col-md-2 control-label col-form-label">Alamat</label>
+                        <div class="col-md-10">
                             <input type="text" class="form-control" id="address" name="address"
                                 value="{{ $employee->address }}" required>
                             @error('address')
@@ -49,10 +49,10 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-1 control-label col-form-label">Jenis Kelamin</label>
-                        <div class="col-11">
+                        <label class="col-md-2 control-label col-form-label">Jenis Kelamin</label>
+                        <div class="col-md-10">
                             <select class="form-control" id="gender" name="gender" required>
-                                <option value="">Pilih Jenis Kelamin</option>
+                                <option value="" disabled selected>-- Pilih Jenis Kelamin --</option>
                                 <option value="Laki-laki" {{ $employee->gender == 'Laki-laki' ? 'selected' : '' }}>Laki-laki
                                 </option>
                                 <option value="Perempuan" {{ $employee->gender == 'Perempuan' ? 'selected' : '' }}>Perempuan
@@ -64,8 +64,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-1 control-label col-form-label">No HP</label>
-                        <div class="col-11">
+                        <label class="col-md-2 control-label col-form-label">No HP</label>
+                        <div class="col-md-10">
                             <input type="text" class="form-control" id="no_hp" name="no_hp"
                                 value="{{ $employee->no_hp }}" required>
                             @error('no_hp')
@@ -74,8 +74,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-1 control-label col-form-label">Posisi</label>
-                        <div class="col-11">
+                        <label class="col-md-2 control-label col-form-label">Posisi</label>
+                        <div class="col-md-10">
                             <select class="form-control" id="id_position" name="id_position" required>
                                 @foreach ($positions as $position)
                                     <option value="{{ $position->id_position }}"
@@ -89,8 +89,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-1 control-label col-form-label">Departemen</label>
-                        <div class="col-11">
+                        <label class="col-md-2 control-label col-form-label">Departemen</label>
+                        <div class="col-md-10">
                             <select class="form-control" id="id_department" name="id_department" required>
                                 @foreach ($departments as $department)
                                     <option value="{{ $department->id_department }}"
@@ -104,8 +104,8 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label class="col-1 control-label col-form-label"></label>
-                        <div class="col-11">
+                        <label class="col-md-2 control-label col-form-label"></label>
+                        <div class="col-md-10">
                             <button type="submit" class="btn btn-primary btn-sm">Update Data</button>
                             <a class="btn btn-sm btn-default ml-1" href="{{ route('admin.employee.index') }}">Kembali</a </div>
                         </div>

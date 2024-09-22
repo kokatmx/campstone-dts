@@ -1,6 +1,6 @@
 <div class="sidebar">
     <!-- SidebarSearch Form -->
-    {{-- <div class="form-inline mt-2">
+    <div class="form-inline mt-2">
         <div class="input-group" data-widget="sidebar-search">
             <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
             <div class="input-group-append">
@@ -9,12 +9,13 @@
                 </button>
             </div>
         </div>
-    </div> --}}
+    </div>
     <!-- Sidebar Menu -->
-    <nav class="mt-2">
+    <nav class="mt-5">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <li class="nav-item">
-                <a href="{{ url('/admin/anuu') }}" class="nav-link  {{ $activeMenu == 'dashboard' ? 'active' : '' }} ">
+                <a href="{{ url('/admin/dashboard') }}"
+                    class="nav-link  {{ $activeMenu == 'dashboard' ? 'active' : '' }} ">
                     <i class="nav-icon fas fa-tachometer-alt"></i>
                     <p>Dashboard</p>
                 </a>
@@ -68,11 +69,11 @@
                     <p>Cuti</p>
                 </a>
             </li>
-            <li class="nav-header">Data User</li>
             <li class="nav-item">
-                <a href="{{ url('/admin/user') }}" class="nav-link {{ $activeMenu == 'user' ? 'active' : '' }}">
-                    <i class="nav-icon far fa-user"></i>
-                    <p>Data User</p>
+                <a href="{{ url('/admin/swapshift') }}"
+                    class="nav-link {{ $activeMenu == 'swapshift' ? 'active' : '' }}">
+                    <i class="nav-icon fas fa-sync"></i>
+                    <p>Ganti Shift</p>
                 </a>
             </li>
         </ul>

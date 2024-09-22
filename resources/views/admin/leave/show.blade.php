@@ -10,18 +10,26 @@
             <table class="table table-bordered">
                 <tr>
                     <th>Nama Karyawan</th>
-                    <td>{{ $schedule->employee->name }}</td>
+                    <td>{{ $leave->employee->name }}</td>
                 </tr>
                 <tr>
-                    <th>Tanggal</th>
-                    <td>{{ $schedule->date }}</td>
+                    <th>Tanggal Mulai</th>
+                    <td>{{ $leave->start_date }}</td>
                 </tr>
                 <tr>
-                    <th>Shift</th>
-                    <td>{{ $schedule->shift }}</td>
+                    <th>Tanggal Berakhir</th>
+                    <td>{{ $leave->end_date }}</td>
+                </tr>
+                <tr>
+                    <th>Alasan</th>
+                    <td>{{ $leave->reason }}</td>
+                </tr>
+                <tr>
+                    <th>Status</th>
+                    <td>{{ $leave->status }}</td>
                 </tr>
             </table>
-            <a href="{{ route('admin.schedule.index') }}" class="mt-5 btn btn-sm btn-default">Kembali</a>
+            <a href="{{ route('admin.leave.index') }}" class="mt-5 btn btn-sm btn-default">Kembali</a>
         </div>
     </div>
 @endsection

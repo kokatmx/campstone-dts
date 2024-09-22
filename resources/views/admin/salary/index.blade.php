@@ -20,7 +20,7 @@
                     <thead>
                         <tr>
                             <th>Nomor</th>
-                            <th>Nama</th>
+                            <th>Nama Karyawan</th>
                             <th>Gaji Pokok</th>
                             <th>Tunjangan</th>
                             <th>Potongan</th>
@@ -54,7 +54,7 @@
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
-                        className: "text-center",
+                        className: "",
                         orderable: true,
                         searchable: false,
                     }, {
@@ -116,7 +116,7 @@
                 ],
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
                 ],
             });
         });

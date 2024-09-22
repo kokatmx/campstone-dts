@@ -7,7 +7,7 @@
             <div class="card-tools"></div>
         </div>
         <div class="card-body">
-            <form method="POST" action="{{ route('admin.schedule.store') }}" class="form-horizontal">
+            <form method="POST" action="{{ route('admin.leave.store') }}" class="form-horizontal">
                 @csrf
                 <div class="form-group row">
                     <label for="id_employee" class="col-md-1 col-form-label control-label">Nama Karyawan</label>
@@ -25,23 +25,43 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="date" class="col-md-1 col-form-label control-label">Tanggal</label>
+                    <label for="start_date" class="col-md-1 col-form-label control-label">Tanggal Mulai</label>
                     <div class="col-md-11">
-                        <input type="date" class="form-control" id="date" name="date" required>
-                        @error('date')
+                        <input type="date" class="form-control" id="start_date" name="start_date" required>
+                        @error('start_date')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
                     </div>
                 </div>
 
                 <div class="form-group row">
-                    <label for="shift" class="col-md-1 col-form-label control-label">Shift</label>
+                    <label for="end_date" class="col-md-1 col-form-label control-label">Tanggal Berakhir</label>
                     <div class="col-md-11">
-                        <select name="shift" id="shift" class="form-control">
-                            <option value="" disabled selected>-- Pilih Shift --</option>
-                            <option value="pagi">Pagi</option>
-                            <option value="siang">Siang</option>
-                            <option value="malam">Malam</option>
+                        <input type="date" class="form-control" id="end_date" name="end_date" required>
+                        @error('end_date')
+                            <small class="form-text text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="reason" class="col-md-1 col-form-label control-label">Alasan</label>
+                    <div class="col-md-11">
+                        <input type="text" class="form-control" id="reason" name="reason" required>
+                        @error('reason')
+                            <small class="form-text text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="status" class="col-md-1 col-form-label control-label">Status</label>
+                    <div class="col-md-11">
+                        <select name="status" id="status" class="form-control">
+                            <option value="" disabled selected>-- Pilih Status --</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="in_process">In Process</option>
                         </select>
                     </div>
                 </div>
@@ -50,7 +70,7 @@
                     <label class="col-md-1 control-label col-form-label"></label>
                     <div class="col-md-11">
                         <button type="submit" class="btn btn-primary btn-sm">Tambah Data</button>
-                        <a class="btn btn-sm btn-default ml-1" href="{{ route('admin.schedule.index') }}">Kembali</a>
+                        <a class="btn btn-sm btn-default ml-1" href="{{ route('admin.leave.index') }}">Kembali</a>
                     </div>
                 </div>
             </form>

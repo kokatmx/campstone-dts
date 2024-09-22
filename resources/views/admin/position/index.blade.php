@@ -22,6 +22,7 @@
                             <th>Nomor</th>
                             <th>Nama Posisi</th>
                             <th>Deskripsi</th>
+                            <th>Gaji Pokok</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -67,6 +68,12 @@
                         searchable: true
                     },
                     {
+                        data: 'basic_salary',
+                        className: "",
+                        orderable: true,
+                        searchable: true
+                    },
+                    {
                         data: 'aksi',
                         className: "",
                         orderable: false,
@@ -95,7 +102,7 @@
                 // ],
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
                 ],
             });
         });

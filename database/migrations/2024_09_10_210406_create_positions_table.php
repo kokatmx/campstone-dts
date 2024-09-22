@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('positions', function (Blueprint $table) {
             $table->id('id_position'); // Primary key
             $table->string('name'); // Nama posisi
-            $table->string('description'); // Nama posisi
+            $table->string('description'); // Deskripsi posisi
+            $table->decimal('basic_salary', 10, 2); // Gaji pokok berdasarkan posisi
             $table->timestamps();
         });
     }

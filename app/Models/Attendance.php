@@ -26,4 +26,9 @@ class Attendance extends Model
     {
         return $this->belongsTo(Employee::class, 'id_employee', 'id_employee');
     }
+
+    public function schedule()
+    {
+        return $this->belongsTo(Schedule::class, 'id_schedule');
+    }
 }

@@ -5,7 +5,7 @@
         <div class="card-header">
             <h3 class="card-title">{{ $page->title }}</h3>
             <div class="card-tools">
-                <a class="btn btn-sm btn-primary mt-1" href="{{ route('admin.schedule.create') }}">Tambah</a>
+                <a class="btn btn-sm btn-primary mt-1" href="{{ route('admin.leave.create') }}">Tambah</a>
             </div>
         </div>
         <div class="card-body">
@@ -16,13 +16,15 @@
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
             <div class="table-responsive">
-                <table class="table table-bordered table-striped table-hover table-sm" id="table_schedule">
+                <table class="table table-bordered table-striped table-hover table-sm" id="table_leave">
                     <thead>
                         <tr>
                             <th>Nomor</th>
                             <th>Nama Karyawan</th>
-                            <th>Tanggal</th>
-                            <th>Shift</th>
+                            <th>Tanggal Mulai</th>
+                            <th>Tanggal Berakhir</th>
+                            <th>Alasan</th>
+                            <th>Status</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -39,11 +41,11 @@
 @push('js')
     <script>
         $(document).ready(function() {
-            $('#table_schedule').DataTable({
+            $('#table_leave').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('admin.schedule.list') }}",
+                    url: "{{ route('admin.leave.list') }}",
                     type: "POST",
                     data: function(d) {
                         d._token = "{{ csrf_token() }}";
@@ -61,7 +63,7 @@
                         searchable: true
                     },
                     {
-                        data: 'date',
+                        data: 'start_date',
                         className: "",
                         orderable: true,
                         searchable: true,
@@ -80,12 +82,35 @@
                         }
                     },
                     {
-                        data: 'shift',
+                        data: 'end_date',
                         className: "",
                         orderable: true,
-                        searchable: true
+                        searchable: true,
+                        render: function(data, type, row) {
+                            // Format tanggal menjadi dd/mm/yy
+                            if (data) {
+                                var date = new Date(data);
+                                var day = ("0" + date.getDate()).slice(-2);
+                                var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                                var year = date.getFullYear(); // Ambil 2 digit terakhir dari tahun
+                                // var year = date.getFullYear().toString().slice(-
+                                // 2); // Ambil 2 digit terakhir dari tahun
+                                return day + '/' + month + '/' + year;
+                            }
+                            return data;
+                        }
                     },
                     {
+                        data: 'reason',
+                        className: "",
+                        orderable: false,
+                        searchable: false
+                    }, {
+                        data: 'status',
+                        className: "",
+                        orderable: false,
+                        searchable: false
+                    }, {
                         data: 'aksi',
                         className: "",
                         orderable: false,

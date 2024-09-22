@@ -21,7 +21,7 @@ class Employee extends Model
     ];
     public function position()
     {
-        return $this->belongsTo(Position::class, 'id_position');
+        return $this->belongsTo(Position::class, 'id_position', 'id_position');
     }
 
     public function department()

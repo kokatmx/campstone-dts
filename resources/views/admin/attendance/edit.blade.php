@@ -16,7 +16,7 @@
                     <label for="name" class="col-md-1 col-form-label control-label">Nama Karyawan</label>
                     <div class="col-md-11">
                         <select name="id_employee" id="name" class="form-control">
-                            <option value="" disabled selected>-- Pilih Nama --</option>
+                            <option value="" disabled selected>-- Pilih Nama Karyawan --</option>
                             @foreach ($employees as $employee)
                                 <option value="{{ $employee->id_employee }}"
                                     {{ $attendance->id_employee == $employee->id_employee ? 'selected' : '' }}>

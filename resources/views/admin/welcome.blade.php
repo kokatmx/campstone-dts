@@ -14,8 +14,13 @@
                 </button>
             </div>
         </div>
+        @if (session('status'))
+            <div class="alert alert-success">
+                {{ session('status') }}
+            </div>
+        @endif
         <div class="card-body">
-            Start creating your amazing application!
+            Selamat datang admin
         </div>
         <!-- /.card-body -->
         <div class="card-footer">

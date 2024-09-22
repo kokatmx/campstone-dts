@@ -12,8 +12,8 @@
                 @method('PUT')
 
                 <div class="form-group row">
-                    <label class="col-1 control-label col-form-label">Nama Posisi</label>
-                    <div class="col-11">
+                    <label class="col-md-1 control-label col-form-label">Nama Posisi</label>
+                    <div class="col-md-11">
                         <input type="text" class="form-control" id="name" name="name"
                             value="{{ old('name', $position->name) }}" required>
                         @error('name')
@@ -22,8 +22,8 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-1 control-label col-form-label">Deskripsi</label>
-                    <div class="col-11">
+                    <label class="col-md-1 control-label col-form-label">Deskripsi</label>
+                    <div class="col-md-11">
                         <input type="text" class="form-control" id="description" name="description"
                             value="{{ old('description', $position->description) }}" required>
                         @error('description')
@@ -32,8 +32,19 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label class="col-1 control-label col-form-label"></label>
-                    <div class="col-11">
+                    <label class="col-md-1 control-label col-form-label">Deskripsi</label>
+                    <div class="col-md-11">
+                        <input type="number" class="form-control" id="basic_salary" name="basic_salary"
+                            value="{{ old('basic_salary', $position->basic_salary) }}" required>
+                        @error('basic_salary')
+                            <small class="form-text text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-1 control-label col-form-label"></label>
+                    <div class="col-md-11">
                         <button type="submit" class="btn btn-primary btn-sm">Update Data</button>
                         <a class="btn btn-sm btn-default ml-1" href="{{ route('admin.position.index') }}">Kembali</a>
                     </div>

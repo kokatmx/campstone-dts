@@ -17,10 +17,14 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        // User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        User::factory()->create([
+            'name' => 'saya',
+            'email' => 'saya@example.com',
+            'password' => Hash::make('1234567890'),
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         // Seed positions and departments first
         // $this->call(class: [
@@ -28,7 +32,7 @@ class DatabaseSeeder extends Seeder
         //     DepartmentSeeder::class,
         // ]);
 
-        // Seed employees and related tables
+        // // Seed employees and related tables
         // \App\Models\Employee::factory(10)->create()->each(function ($employee) {
         //     \App\Models\Salary::factory()->create(['id_employee' => $employee->id]);
         //     \App\Models\Attendance::factory(5)->create(['id_employee' => $employee->id]);
@@ -38,7 +42,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('users')->insert([
             'name' => 'Admin AKU',
-            'email' => 'admin@aku.com',
+            'email' => 'adminku@gmail.com',
             'password' => Hash::make('1234567890'),
             'role' => 'admin',
             'created_at' => now(),

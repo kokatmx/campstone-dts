@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Employee;
+use App\Models\Position;
 use App\Models\Salary;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
@@ -67,8 +68,9 @@ class SalaryController extends Controller
             'title' => 'Tambah Data Gaji Karyawan',
         ];
         $employees = Employee::all();
+        $positions = Position::all();
         $activeMenu = 'salary';
-        return view('admin.salary.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'employees' => $employees, 'activeMenu' => $activeMenu]);
+        return view('admin.salary.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'employees' => $employees, 'positions' => $positions, 'activeMenu' => $activeMenu]);
     }
 
     /**
@@ -76,16 +78,31 @@ class SalaryController extends Controller
      */
     public function store(Request $request)
     {
-        $salary = new Salary();
-        $salary->id_employee = $request->input('id_employee');
-        $salary->basic_salary = $request->input('basic_salary');
-        $salary->allowances = $request->input('allowances');
-        $salary->deductions = $request->input('deductions');
-        $salary->total_salary = $salary->basic_salary + $salary->allowances - $salary->deductions;
-        $salary->save();
+        $request->validate([
+            'id_employee' => 'required|exists:employees,id_employee',
+            'id_position' => 'required|exists:positions,id_position',
+            'allowances' => 'required|numeric',
+            'deductions' => 'nullable|numeric',
+        ]);
 
-        return redirect()->route('admin.salary.index')->with('success', 'Data berhasil ditambahkan');
+        // Mendapatkan posisi karyawan dan gaji pokoknya
+        $position = Position::find($request->id_position);
+
+        // Hitung total gaji
+        $totalSalary = $position->basic_salary + $request->allowances - $request->deductions;
+
+        // Simpan data gaji
+        Salary::create([
+            'id_employee' => $request->id_employee,
+            'basic_salary' => $position->basic_salary,
+            'allowances' => $request->allowances,
+            'deductions' => $request->deductions ?? 0,
+            'total_salary' => $totalSalary,
+        ]);
+
+        return redirect()->route('admin.salary.index')->with('success', 'Data gaji berhasil ditambahkan');
     }
+
 
     /**
      * Display the specified resource.
@@ -169,5 +186,19 @@ class SalaryController extends Controller
         } else {
             return redirect()->route('admin.salary.index')->with('error', 'Data gaji karyawan tidak ditemukan');
         }
+    }
+
+    public function getEmployeePosition($id_employee)
+    {
+        $employee = Employee::with('position')->find($id_employee);
+
+        if ($employee) {
+            return response()->json([
+                'position' => $employee->position->name,
+                'basic_salary' => $employee->position->basic_salary
+            ]);
+        }
+
+        return response()->json(['error' => 'Employee not found'], 404);
     }
 }

@@ -24,9 +24,6 @@
                             <th>Posisi</th>
                             <th>Departemen</th>
                             <th>Email</th>
-                            <th>Alamat</th>
-                            <th>Jenis Kelamin</th>
-                            <th>No. HP</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -56,37 +53,37 @@
                         }
                     },
                     columns: [{
+                            // data: 'DT_RowIndex',
+                            // name: 'DT_RowIndex',
+                            // className: 'text-center',
                             data: 'DT_RowIndex',
-                            name: 'DT_RowIndex',
-                            className: 'text-center',
+                            className: "",
+                            orderable: true,
+                            searchable: true
                         },
                         {
                             data: 'name',
-                            name: 'name'
+                            className: "",
+                            orderable: true,
+                            searchable: true
                         },
                         {
                             data: 'position.name',
-                            name: 'position.name'
+                            className: "",
+                            orderable: true,
+                            searchable: true
                         },
                         {
                             data: 'department.name',
-                            name: 'department.name'
+                            className: "",
+                            orderable: true,
+                            searchable: true
                         },
                         {
                             data: 'email',
-                            name: 'email'
-                        },
-                        {
-                            data: 'address',
-                            name: 'address'
-                        },
-                        {
-                            data: 'gender',
-                            name: 'gender'
-                        },
-                        {
-                            data: 'no_hp',
-                            name: 'no_hp'
+                            className: "",
+                            orderable: true,
+                            searchable: true
                         },
                         {
                             data: 'aksi',
@@ -101,10 +98,16 @@
                         data: 'DT_RowIndex',
                         orderable: false,
                         searchable: false
-                    }, ],
+                    }, {
+                        targets: 1, // Asumsikan kolom nama ada di indeks 1
+                        data: 'name',
+                        visible: true,
+                        orderable: true,
+                        searchable: true,
+                    }],
                     dom: 'Bfrtip',
                     buttons: [
-                        'copy', 'csv', 'excel', 'pdf', 'print'
+                        'excel', 'pdf', 'print'
                     ],
                     language: {
                         search: "🔍 Search:",

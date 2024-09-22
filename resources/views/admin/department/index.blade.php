@@ -14,19 +14,21 @@
             @if (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
-            <table class="table table-bordered table-striped table-hover table-sm" id="table_department">
-                <thead>
-                    <tr>
-                        <th>Nomor</th>
-                        <th>Nama Departemen</th>
-                        <th>Deskripsi</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped table-hover table-sm" id="table_department">
+                    <thead>
+                        <tr>
+                            <th>Nomor</th>
+                            <th>Nama Departemen</th>
+                            <th>Deskripsi</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 @endsection
@@ -48,7 +50,7 @@
                 columns: [{
                         data: 'DT_RowIndex',
                         name: 'DT_RowIndex',
-                        className: "text-center",
+                        className: "",
                         orderable: true,
                         searchable: false,
                     }, {
@@ -75,24 +77,24 @@
                     lengthMenu: "Show _MENU_ entries",
                     info: "Showing _START_ to _END_ of _TOTAL_ entries"
                 },
-                // columnDefs: [{
-                //         targets: 0,
-                //         title: 'Nomor',
-                //         data: 'DT_RowIndex',
-                //         orderable: false,
-                //         searchable: false
-                //     },
-                //     {
-                //         targets: 1, // Asumsikan kolom nama ada di indeks 1
-                //         data: 'employee.name',
-                //         visible: true,
-                //         orderable: true,
-                //         searchable: true,
-                //     }
-                // ],
+                columnDefs: [{
+                        targets: 0,
+                        title: 'Nomor',
+                        data: 'DT_RowIndex',
+                        orderable: true,
+                        searchable: true
+                    },
+                    {
+                        targets: 1, // Asumsikan kolom nama ada di indeks 1
+                        data: 'name',
+                        visible: true,
+                        orderable: true,
+                        searchable: true,
+                    }
+                ],
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy', 'csv', 'excel', 'pdf', 'print'
+                    'excel', 'pdf', 'print'
                 ],
             });
         });

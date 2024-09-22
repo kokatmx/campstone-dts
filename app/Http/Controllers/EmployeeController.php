@@ -75,17 +75,24 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'address' => 'required',
+            'gender' => 'required',
+            'no_hp' => 'required',
+            'id_position' => 'required|exists:positions,id_position',
             'id_department' => 'required|exists:departments,id_department',
         ]);
-        $employee = new Employee();
-        $employee->name = $request->input('name');
-        $employee->email = $request->input('email');
-        $employee->address = $request->input('address');
-        $employee->gender = $request->input('gender');
-        $employee->no_hp = $request->input('no_hp');
-        $employee->id_position = $request->input('id_position');
-        $employee->id_department = $request->input('id_department');
-        $employee->save();
+        Employee::create($request->all());
+        // $employee = new Employee();
+        // $employee->name = $request->input('name');
+        // $employee->email = $request->input('email');
+        // $employee->address = $request->input('address');
+        // $employee->gender = $request->input('gender');
+        // $employee->no_hp = $request->input('no_hp');
+        // $employee->id_position = $request->input('id_position');
+        // $employee->id_department = $request->input('id_department');
+        // $employee->save();
         return redirect()->route('admin.employee.index')->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -140,14 +147,17 @@ class EmployeeController extends Controller
             'id_position' => 'required|exists:positions,id_position',
             'id_department' => 'required|exists:departments,id_department',
         ]);
-        $employee->name = $request->input('name');
-        $employee->email = $request->input('email');
-        $employee->address = $request->input('address');
-        $employee->gender = $request->input('gender');
-        $employee->no_hp = $request->input('no_hp');
-        $employee->id_position = $request->input('id_position');
-        $employee->id_department = $request->input('id_department');
-        $employee->save();
+
+        $employee->update($request->all());
+
+        // $employee->name = $request->input('name');
+        // $employee->email = $request->input('email');
+        // $employee->address = $request->input('address');
+        // $employee->gender = $request->input('gender');
+        // $employee->no_hp = $request->input('no_hp');
+        // $employee->id_position = $request->input('id_position');
+        // $employee->id_department = $request->input('id_department');
+        // $employee->save();
         return redirect()->route('admin.employee.index')->with('success', 'Data berhasil diupdate');
     }
 
@@ -161,4 +171,20 @@ class EmployeeController extends Controller
             return redirect()->route('admin.employee.index')->with('error', 'Data karyawan tidak ditemukan');
         }
     }
+
+    // public function getSalaryInfo($id)
+    // {
+    //     // Cari employee berdasarkan ID
+    //     $employee = Employee::with('position')->find($id);
+
+    //     // Pastikan data employee ditemukan
+    //     if ($employee) {
+    //         return response()->json([
+    //             'position' => $employee->position->name,
+    //             'basic_salary' => $employee->position->basic_salary,
+    //         ]);
+    //     } else {
+    //         return response()->json(['error' => 'Employee not found'], 404);
+    //     }
+    // }
 }

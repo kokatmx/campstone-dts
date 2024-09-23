@@ -14,8 +14,7 @@ return new class extends Migration
         Schema::create('schedules', function (Blueprint $table) {
             $table->id('id_schedule');
             $table->unsignedBigInteger('id_employee');
-            $table->date('start_date'); // Starting date of the shift period
-            $table->date('end_date');   // End date of the shift period
+            $table->date('date');
             $table->enum('shift', ['pagi', 'siang', 'malam']); // Shift type
             $table->string('note')->nullable(); // Note
             $table->timestamps();

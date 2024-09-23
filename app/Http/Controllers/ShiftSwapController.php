@@ -6,9 +6,48 @@ use App\Models\Attendance;
 use App\Models\Schedule;
 use App\Models\ShiftChange;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ShiftSwapController extends Controller
 {
+
+    public function index()
+    {
+
+        $breadcrumb = (object)[
+            'title' => 'Data Kehadiran Karyawan',
+            'list' => ['Home', 'Kehadiran'],
+        ];
+        $page = (object)[
+            'title' => 'Data kehadiran karyawan yang tersimpan dalam sistem',
+        ];
+        $shiftChanges = ShiftChange::with(['scheduleFrom.employee', 'scheduleTo.employee'])->get();
+        $schedules = Schedule::with('employee')->get();
+        return view('admin.shift_changes.index', ['breadcrumb' => $breadcrumb, 'schedules' => $schedules, 'shiftChanges' => $shiftChanges, 'page' => $page]);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'id_schedule_from' => 'required|exists:schedules,id_schedule',
+            'id_schedule_to' => 'required|exists:schedules,id_schedule|different:id_schedule_from',
+        ]);
+
+        ShiftChange::create([
+            'id_schedule_from' => $validated['id_schedule_from'],
+            'id_schedule_to' => $validated['id_schedule_to'],
+            'status' => 'diproses',
+        ]);
+
+        return redirect()->route('shift-changes.index')->with('success', 'Permintaan pergantian shift berhasil diajukan');
+    }
+
+    // public function reject(ShiftChange $shiftChange)
+    // {
+    //     $shiftChange->update(['status' => 'ditolak']);
+    //     return redirect()->route('shift-changes.index')->with('success', 'Pergantian shift ditolak');
+    // }
+
     // public function requestShiftSwap(Request $request)
     // {
     //     // Validate that both schedule IDs exist
@@ -28,85 +67,136 @@ class ShiftSwapController extends Controller
 
     //     return response()->json(['success' => 'Shift swap request submitted', 'shift_change' => $shiftChange]);
     // }
+    // public function showSwapRequestForm()
+    // {
+    //     $mySchedules = Schedule::where('id_employee', auth()->user()->id_employee)->get();
+    //     $otherSchedules = Schedule::where('id_employee', '!=', auth()->user()->id_employee)->get();
+
+    //     return view('shift_swap.request', compact('mySchedules', 'otherSchedules'));
+    // }
 
     // public function approveShiftSwap($id)
     // {
-    //     // Find the shift change request
-    //     $shiftChange = ShiftChange::find($id);
+    //     $shiftChange = ShiftChange::findOrFail($id);
 
-    //     if (!$shiftChange || $shiftChange->status !== 'pending') {
-    //         return response()->json(['error' => 'Invalid or already processed request'], 400);
-    //     }
-
-    //     // Perform the swap by swapping the employees in the schedules
-    //     $fromSchedule = Schedule::find($shiftChange->id_schedule_from);
-    //     $toSchedule = Schedule::find($shiftChange->id_schedule_to);
-
-    //     // Swap the employees
-    //     $tempEmployee = $fromSchedule->id_employee;
-    //     $fromSchedule->id_employee = $toSchedule->id_employee;
-    //     $toSchedule->id_employee = $tempEmployee;
-
-    //     // Save the updated schedules
-    //     $fromSchedule->save();
-    //     $toSchedule->save();
-
-    //     // Update the shift change request status to approved
+    //     // Update shift change status to approved
     //     $shiftChange->status = 'approved';
     //     $shiftChange->save();
 
-    //     return response()->json(['success' => 'Shift swap approved']);
+    //     // Get the schedules involved in the swap
+    //     $scheduleFrom = Schedule::findOrFail($shiftChange->id_schedule_from);
+    //     $scheduleTo = Schedule::findOrFail($shiftChange->id_schedule_to);
+
+    //     // Swap the shifts between the employees in the schedules
+    //     $tempShift = $scheduleFrom->shift;
+    //     $scheduleFrom->shift = $scheduleTo->shift;
+    //     $scheduleTo->shift = $tempShift;
+
+    //     $scheduleFrom->save();
+    //     $scheduleTo->save();
+
+    //     // Update attendance records for both employees after swap
+    //     Attendance::where('id_employee', $scheduleFrom->id_employee)
+    //         ->where('date', $scheduleFrom->date)
+    //         ->update(['shift' => $scheduleFrom->shift]);
+
+    //     Attendance::where('id_employee', $scheduleTo->id_employee)
+    //         ->where('date', $scheduleTo->date)
+    //         ->update(['shift' => $scheduleTo->shift]);
+
+    //     return redirect()->back()->with('success', 'Shift swap approved and attendance updated.');
     // }
 
-    // public function rejectShiftSwap($id)
+    // public function manageShiftSwaps()
     // {
-    //     // Find the shift change request
-    //     $shiftChange = ShiftChange::find($id);
+    //     $shiftChanges = ShiftChange::with(['fromSchedule.employee', 'toSchedule.employee'])->get();
 
-    //     if (!$shiftChange || $shiftChange->status !== 'pending') {
-    //         return response()->json(['error' => 'Invalid or already processed request'], 400);
-    //     }
-
-    //     // Update the shift change request status to rejected
-    //     $shiftChange->status = 'rejected';
-    //     $shiftChange->save();
-
-    //     return response()->json(['success' => 'Shift swap rejected']);
+    //     return view('shift_swap.manage', compact('shiftChanges'));
     // }
 
-    public function store(Request $request)
+
+    // todo:yang baru coy!!!
+    public function requestShiftSwap(Request $request)
     {
-        $validated = $request->validate([
-            'id_schedule_from' => 'required|exists:schedules,id_schedule',
-            'id_schedule_to' => 'required|exists:schedules,id_schedule|different:id_schedule_from',
-        ]);
+        // Validate that both schedule IDs exist
+        $fromSchedule = Schedule::find($request->id_schedule_from);
+        $toSchedule = Schedule::find($request->id_schedule_to);
 
+        if (!$fromSchedule || !$toSchedule) {
+            return response()->json(['error' => 'Invalid schedules'], 400);
+        }
+
+        // Create a new shift change request
         $shiftChange = ShiftChange::create([
-            'id_schedule_from' => $validated['id_schedule_from'],
-            'id_schedule_to' => $validated['id_schedule_to'],
-            'status' => 'diproses',
+            'id_schedule_from' => $request->id_schedule_from,
+            'id_schedule_to' => $request->id_schedule_to,
+            'status' => 'pending'
         ]);
 
-        return response()->json(['message' => 'Permintaan pergantian shift berhasil diajukan'], 201);
+        return response()->json(['success' => 'Shift swap request submitted', 'shift_change' => $shiftChange]);
     }
 
-    public function approve(ShiftChange $shiftChange)
+    public function approveShiftSwap($id)
     {
-        $shiftChange->update(['status' => 'disetujui']);
+        $shiftChange = ShiftChange::findOrFail($id);
 
-        // Logika untuk menukar jadwal dan kehadiran
-        $scheduleFrom = $shiftChange->scheduleFrom;
-        $scheduleTo = $shiftChange->scheduleTo;
+        // Update shift change status to approved
+        $shiftChange->status = 'disetujui';
+        $shiftChange->save();
 
-        // Tukar shift
+        // Get the schedules involved in the swap
+        $scheduleFrom = Schedule::findOrFail($shiftChange->id_schedule_from);
+        $scheduleTo = Schedule::findOrFail($shiftChange->id_schedule_to);
+
+        // Swap the shifts between the employees in the schedules
         $tempShift = $scheduleFrom->shift;
-        $scheduleFrom->update(['shift' => $scheduleTo->shift]);
-        $scheduleTo->update(['shift' => $tempShift]);
+        $scheduleFrom->shift = $scheduleTo->shift;
+        $scheduleTo->shift = $tempShift;
 
-        // Perbarui kehadiran terkait
-        Attendance::where('id_schedule', $scheduleFrom->id_schedule)->update(['shift' => $scheduleFrom->shift]);
-        Attendance::where('id_schedule', $scheduleTo->id_schedule)->update(['shift' => $scheduleTo->shift]);
+        $scheduleFrom->save();
+        $scheduleTo->save();
 
-        return response()->json(['message' => 'Pergantian shift disetujui dan diterapkan'], 200);
+        // Update attendance records for both employees after swap
+        Attendance::where('id_employee', $scheduleFrom->id_employee)
+            ->where('date', $scheduleFrom->date)
+            ->update(['shift' => $scheduleFrom->shift]);
+
+        Attendance::where('id_employee', $scheduleTo->id_employee)
+            ->where('date', $scheduleTo->date)
+            ->update(['shift' => $scheduleTo->shift]);
+
+        return redirect()->back()->with('success', 'Shift swap approved and attendance updated.');
+    }
+
+
+    public function rejectShiftSwap($id)
+    {
+        // Find the shift change request
+        $shiftChange = ShiftChange::find($id);
+
+        if (!$shiftChange || $shiftChange->status !== 'pending') {
+            return response()->json(['error' => 'Invalid or already processed request'], 400);
+        }
+
+        // Update the shift change request status to rejected
+        $shiftChange->status = 'rejected';
+        $shiftChange->save();
+
+        return response()->json(['success' => 'Shift swap rejected']);
+    }
+
+    public function showSwapRequestForm()
+    {
+        $mySchedules = Schedule::where('id_employee', Auth::user()->id_employee)->get();
+        $otherSchedules = Schedule::where('id_employee', '!=', Auth::user()->id_employee)->get();
+
+        return view('admin.shift_swap.request', compact('mySchedules', 'otherSchedules'));
+    }
+
+    public function manageShiftSwaps()
+    {
+        $shiftChanges = ShiftChange::with(['fromSchedule.employee', 'toSchedule.employee'])->get();
+
+        return view('admin.shift_swap.manage', compact('shiftChanges'));
     }
 }

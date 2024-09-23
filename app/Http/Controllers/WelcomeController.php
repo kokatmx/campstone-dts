@@ -34,17 +34,6 @@ class WelcomeController extends BaseController
             return redirect()->route('login');
         }
 
-        $breadcrumb = (object)[
-            'title' => 'Selamat Datang',
-            'list' => ['Home', 'Welcome'],
-        ];
-
-        $activeMenu = 'dashboard';
-
-        return view('dashboard', [
-            'breadcrumb' => $breadcrumb,
-            'user' => $user,
-            'activeMenu' => $activeMenu
-        ]);
+        return view('dashboard');
     }
 }

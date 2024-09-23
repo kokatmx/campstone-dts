@@ -63,8 +63,8 @@
                     {
                         data: 'date',
                         className: "",
-                        orderable: true,
-                        searchable: true,
+                        orderable: false,
+                        searchable: false,
                         render: function(data, type, row) {
                             // Format tanggal menjadi dd/mm/yy
                             if (data) {
@@ -82,8 +82,8 @@
                     {
                         data: 'shift',
                         className: "",
-                        orderable: true,
-                        searchable: true
+                        orderable: false,
+                        searchable: false
                     },
                     {
                         data: 'aksi',

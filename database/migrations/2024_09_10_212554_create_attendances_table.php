@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('date'); // Automatically assigned based on the schedule
             $table->time('time_in');
             $table->time('time_out');
-            $table->enum('status', ['tepat waktu', 'terlambat', 'lembur']);
+            $table->enum('status', ['tepat waktu', 'terlambat']);
             $table->enum('shift', ['pagi', 'siang', 'malam'])->after('date');
             $table->text('note')->nullable(); // Notes for the attendance status
             $table->timestamps();

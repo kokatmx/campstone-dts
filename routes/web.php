@@ -101,23 +101,55 @@ Route::prefix('admin')->middleware(['auth', 'verified', AdminMiddleware::class])
             Route::delete('/{id}', [AttendanceController::class, 'destroy'])->name('admin.attendance.destroy'); // Perubahan di sini
         });
 
-        // Route::post('/shift-swap/request', [ShiftSwapController::class, 'requestShiftSwap']);
-        // Route::post('/shift-swap/approve/{id}', [ShiftSwapController::class, 'approveShiftSwap']);
-        // Route::post('/shift-swap/reject/{id}', [ShiftSwapController::class, 'rejectShiftSwap']);
+        Route::prefix(prefix: 'shift-changes')->group(function () {
+            Route::get('/', action: [ShiftSwapController::class, 'index'])->name('admin.shift-changes.index');
+            Route::post('/list', [ShiftSwapController::class, 'list'])->name('admin.shift-changes.list');
+            Route::get('/create', [ShiftSwapController::class, 'create'])->name('admin.shift-changes.create');
+            Route::post('/', [ShiftSwapController::class, 'store'])->name('admin.shift-changes.store');
+            Route::get('/{id}', [ShiftSwapController::class, 'show'])->name('admin.shift-changes.show');
+            Route::get('/{id}/edit', [ShiftSwapController::class, 'edit'])->name('admin.shift-changes.edit');
+            Route::put('/{id}', [ShiftSwapController::class, 'update'])->name('admin.shift-changes.update');
+            Route::delete('/{id}', [ShiftSwapController::class, 'destroy'])->name('admin.shift-changes.destroy'); // Perubahan di sini
+        });
 
-        // Route::post('/attendance/checkout', [AttendanceController::class, 'checkOut']);
+        // todo yag lainnya
+        // !!yang lainnya masih ambigu
+        // Shift change request
+        Route::post('schedule/request-shift-change', [ScheduleController::class, 'requestShiftChange'])->name('schedule.request-shift-change');
+        Route::get('schedule/approve-shift-change/{id}/{action}', [ScheduleController::class, 'approveShiftChange'])->name('schedule.approve-shift-change');
 
-        Route::post('/schedules', [ScheduleController::class, 'store']);
-        Route::put('/attendances/{attendance}', [AttendanceController::class, 'update']);
-        Route::post('/shift-changes', [ShiftSwapController::class, 'store']);
+        Route::post('/attendance/checkout', [AttendanceController::class, 'checkOut']);
+
+        // todo:baru lagi
+        Route::post('/shift-swap/request', [ShiftSwapController::class, 'requestShiftSwap']);
+        Route::post('/shift-swap/approve/{id}', [ShiftSwapController::class, 'approveShiftSwap']);
+        Route::post('/shift-swap/reject/{id}', [ShiftSwapController::class, 'rejectShiftSwap']);
+        // Show shift swap request form
+        Route::get('/shift-swap/request', [ShiftSwapController::class, 'showSwapRequestForm']);
+
+        // Submit shift swap request
+        Route::post('/shift-swap/request', [ShiftSwapController::class, 'requestShiftSwap']);
+
+        // Admin manages shift swaps
+        Route::get('/shift-swap/manage', [ShiftSwapController::class, 'manageShiftSwaps']);
+
+        // Approve or reject shift swaps
+        Route::post('/shift-swap/approve/{id}', [ShiftSwapController::class, 'approveShiftSwap']);
+        Route::post('/shift-swap/reject/{id}', [ShiftSwapController::class, 'rejectShiftSwap']);
+
+        //from claude ai
         Route::put('/shift-changes/{shiftChange}/approve', [ShiftSwapController::class, 'approve']);
+        Route::put('shift-changes/{shiftChange}/approve', [ShiftSwapController::class, 'approve'])->name('shift-changes.approve');
+        Route::put('shift-changes/{shiftChange}/reject', [ShiftSwapController::class, 'reject'])->name('shift-changes.reject');
 
+
+        // yang ini sudah benar
         Route::get('/employee-position/{id_employee}', [SalaryController::class, 'getEmployeePosition']);
     });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [WelcomeController::class, 'userDashboard'])->name('user.dashboard');
-});
+Route::get('/dashboard', [WelcomeController::class, 'userDashboard'])
+    ->middleware(['auth', 'verified'])
+    ->name('user.dashboard');
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');

@@ -23,16 +23,16 @@ class AttendanceController extends Controller
         $page = (object)[
             'title' => 'Data kehadiran karyawan yang tersimpan dalam sistem',
         ];
-        $attendance = Attendance::with('employee')->get();
+        $attendance = Attendance::with('employee', 'schedule')->get();
         $activeMenu = 'attendance';
-        return view('admin.attendance.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'attendance' => $attendance, 'activeMenu' => $activeMenu]);
+        return view('admin.attendance.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'attendances' => $attendance, 'activeMenu' => $activeMenu]);
     }
 
     // show list of available datas attendances
     public function list(Request $request)
     {
         $attendances = Attendance::with('employee')
-            ->select('id_attendance', 'id_employee', 'date', 'time_in', 'time_out', 'status', 'notes', 'shift');
+            ->select('id_attendance', 'id_employee', 'date', 'time_in', 'time_out', 'status', 'note', 'shift');
 
         return DataTables::of($attendances)
             ->addIndexColumn()
@@ -60,6 +60,7 @@ class AttendanceController extends Controller
      */
     public function create()
     {
+
         $breadcrumb = (object)[
             'title' => 'Tambah Data Kehadiran Karyawan',
             'list' => ['Home', 'Kehadiran Karyawan', 'Tambah'],
@@ -77,29 +78,47 @@ class AttendanceController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = $request->validate([
+        $request->validate([
             'id_employee' => 'required|exists:employees,id_employee',
             'date' => 'required|date',
             'time_in' => 'required|date_format:H:i',
             'time_out' => 'required|date_format:H:i',
-            'status' => 'required|in:approved,rejected,in_process',
-            'notes' => 'nullable|string',
+            'shift' => 'required|in:pagi,siang,malam',
+            'note' => 'nullable|string|max:255', // Ganti 'notes' menjadi 'note'
         ]);
-        try {
-            //Membuat instance baru menggunakan create
-            Attendance::create([
-                'id_employee' => $validatedData['id_employee'],
-                'date' => $validatedData['date'],
-                'time_in' => $validatedData['time_in'],
-                'time_out' => $validatedData['time_out'],
-                'status' => $validatedData['status'],
-                'notes' => $validatedData['notes'],
-            ]);
-            return redirect()->route('admin.attendance.index')->with('succes', 'Data berhasil ditambahkan');
-        } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan data: ' . $e->getMessage());
+
+        // Mendapatkan jadwal karyawan
+        $currentSchedule = Schedule::where('id_employee', $request->id_employee)
+            ->where('date', $request->date)
+            ->first();
+
+        if (!$currentSchedule) {
+            return redirect()->back()->with('error', 'No shift scheduled for this date');
         }
+
+        // Menentukan status kehadiran
+        $status = $this->checkAttendanceStatus($request->time_in, $request->time_out, $currentSchedule->shift);
+
+        // Menyimpan data kehadiran
+        try {
+            Attendance::create([
+                'id_employee' => $request->id_employee,
+                'id_schedule' => $currentSchedule->id_schedule,
+                'date' => $request->date,
+                'time_in' => $request->time_in,
+                'time_out' => $request->time_out,
+                'status' => $status,
+                'note' => $request->note, // Ganti 'notes' menjadi 'note'
+            ]);
+        } catch (\Exception $e) {
+            Attendance::error('Error saving attendance:', ['error' => $e->getMessage()]);
+            return redirect()->back()->with('error', 'Failed to save attendance');
+        }
+
+        return redirect()->route('admin.attendance.index')->with('success', 'Attendance recorded successfully');
     }
+
+
 
     /**
      * Display the specified resource.
@@ -177,8 +196,9 @@ class AttendanceController extends Controller
     //     }
     // }
 
-    public function update(Request $request, Attendance $attendance)
+    public function update(Request $request, Attendance $attendance, $id)
     {
+        $attendance = Attendance::findOrFail($id);
         $validated = $request->validate([
             'time_in' => 'required|date_format:H:i',
             'time_out' => 'required|date_format:H:i|after:time_in',
@@ -188,11 +208,11 @@ class AttendanceController extends Controller
         $timeIn = Carbon::parse($validated['time_in']);
 
         // Logika untuk menentukan status kehadiran
-        if ($shift === 'pagi' && $timeIn->between('06:50', '07:05')) {
+        if ($shift === 'pagi' && $timeIn->between('06:50', '07:00')) {
             $status = 'tepat waktu';
-        } elseif ($shift === 'siang' && $timeIn->between('11:50', '12:05')) {
+        } elseif ($shift === 'siang' && $timeIn->between('11:50', '12:00')) {
             $status = 'tepat waktu';
-        } elseif ($shift === 'malam' && $timeIn->between('17:50', '18:05')) {
+        } elseif ($shift === 'malam' && $timeIn->between('17:50', '18:00')) {
             $status = 'tepat waktu';
         } else {
             $status = 'terlambat';
@@ -221,31 +241,87 @@ class AttendanceController extends Controller
         }
     }
 
-    // In AttendanceController.php
+    // Determine status based on shift
+    private function checkTimeStatus($timeIn, $shift)
+    {
+        $shiftTimes = [
+            'pagi' => ['start' => '07:00', 'end' => '07:06'],
+            'siang' => ['start' => '12:00', 'end' => '12:06'],
+            'malam' => ['start' => '18:00', 'end' => '18:06'],
+        ];
+
+        // Mengubah format waktu masuk ke Carbon
+        $timeIn = Carbon::createFromFormat('H:i', $timeIn);
+
+        // Menentukan waktu mulai dan akhir shift
+        $shiftStart = Carbon::createFromFormat('H:i', $shiftTimes[$shift]['start']);
+        $shiftEnd = Carbon::createFromFormat('H:i', $shiftTimes[$shift]['end']);
+
+        if ($timeIn->between($shiftStart, $shiftEnd)) {
+            return 'tepat waktu';
+        }
+
+        return 'terlambat';
+    }
+
+    private function checkAttendanceStatus($timeIn, $timeOut, $shift)
+    {
+        $shiftTimes = [
+            'pagi' => ['start' => '07:00', 'end' => '12:00'],
+            'siang' => ['start' => '12:00', 'end' => '18:00'],
+            'malam' => ['start' => '18:00', 'end' => '23:00'],
+        ];
+
+        $shiftStart = Carbon::createFromTimeString($shiftTimes[$shift]['start']);
+        $shiftEnd = Carbon::createFromTimeString($shiftTimes[$shift]['end']);
+        $timeIn = Carbon::createFromTimeString($timeIn);
+        $timeOut = $timeOut ? Carbon::createFromTimeString($timeOut) : null;
+
+        // Tentukan status untuk waktu masuk
+        if ($timeIn->lessThanOrEqualTo($shiftStart->addMinutes(5))) {
+            $statusIn = 'tepat waktu';
+        } else {
+            $statusIn = 'terlambat';
+        }
+
+        // Tentukan status untuk waktu keluar
+        $statusOut = $timeOut && $timeOut->greaterThan($shiftEnd) ? 'lembur' : 'tepat waktu';
+
+        return $statusIn === 'tepat waktu' && ($statusOut ?? true) === 'tepat waktu' ? 'tepat waktu' : 'terlambat';
+    }
+
 
     public function checkIn(Request $request)
     {
-        // Get the employee's current shift from the schedule
+        $request->validate([
+            'id_employee' => 'required|exists:employees,id_employee',
+            'time_in' => 'required|date_format:H:i',
+            'notes' => 'nullable|string|max:255',
+        ]);
+
+        // Mendapatkan jadwal karyawan saat ini
         $currentSchedule = Schedule::where('id_employee', $request->id_employee)
             ->where('date', now()->toDateString())
             ->first();
 
         if (!$currentSchedule) {
-            return response()->json(['error' => 'No shift scheduled today']);
+            return response()->json(['error' => 'No shift scheduled today'], 404);
         }
 
-        // Check the time_in and time_out against the schedule's shift time
+        // Cek waktu masuk
         $timeIn = $request->time_in;
         $shift = $currentSchedule->shift;
 
-        // Logic to determine whether the check-in is late or on time
-        $status = $this->checkAttendanceStatus($timeIn, $shift);
+        // Tentukan status kehadiran
+        $status = $this->checkAttendanceStatus($timeIn, null, $shift);
+
+        // Buat catatan kehadiran
         $attendance = Attendance::create([
             'id_employee' => $request->id_employee,
             'id_schedule' => $currentSchedule->id_schedule,
             'date' => now()->toDateString(),
             'time_in' => $timeIn,
-            'time_out' => null, // Time out will be set later
+            'time_out' => null, // Waktu keluar akan diatur nanti
             'status' => $status,
             'notes' => $request->notes
         ]);
@@ -253,29 +329,13 @@ class AttendanceController extends Controller
         return response()->json($attendance);
     }
 
-    private function checkAttendanceStatus($timeIn, $shift)
-    {
-        $shiftTimes = [
-            'pagi' => ['start' => '07:00', 'end' => '12:00'],
-            'siang' => ['start' => '12:00', 'end' => '18:00'],
-            'malam' => ['start' => '18:00', 'end' => '23:00']
-        ];
-
-        $shiftStart = Carbon::createFromTimeString($shiftTimes[$shift]['start']);
-        $shiftEnd = Carbon::createFromTimeString($shiftTimes[$shift]['end']);
-        $timeIn = Carbon::createFromTimeString($timeIn);
-
-        if ($timeIn->between($shiftStart->copy()->subMinutes(10), $shiftStart->copy()->addMinutes(5))) {
-            return 'tepat waktu';
-        } elseif ($timeIn->greaterThan($shiftStart->addMinutes(5))) {
-            return 'terlambat';
-        } else {
-            return 'early';
-        }
-    }
-
     public function checkOut(Request $request)
     {
+        $request->validate([
+            'id_employee' => 'required|exists:employees,id_employee',
+            'time_out' => 'required|date_format:H:i',
+        ]);
+
         $attendance = Attendance::where('id_employee', $request->id_employee)
             ->where('date', now()->toDateString())
             ->first();
@@ -284,25 +344,25 @@ class AttendanceController extends Controller
             return response()->json(['error' => 'Attendance record not found'], 404);
         }
 
-        // Get the scheduled shift from the schedules table
+        // Dapatkan jadwal yang dijadwalkan
         $schedule = Schedule::find($attendance->id_schedule);
         $shift = $schedule->shift;
 
-        // Define shift times
+        // Definisikan waktu shift
         $shiftTimes = [
             'pagi' => ['start' => '07:00', 'end' => '12:00'],
             'siang' => ['start' => '12:00', 'end' => '18:00'],
             'malam' => ['start' => '18:00', 'end' => '23:00']
         ];
 
-        // Compare the employee's time out with the scheduled shift end time
+        // Bandingkan waktu keluar karyawan dengan waktu akhir shift
         $shiftEndTime = Carbon::createFromTimeString($shiftTimes[$shift]['end']);
         $timeOut = Carbon::createFromTimeString($request->time_out);
 
-        // Determine if the employee worked overtime
+        // Tentukan status berdasarkan waktu keluar
         $status = $timeOut->greaterThan($shiftEndTime) ? 'lembur' : 'tepat waktu';
 
-        // Update the attendance record
+        // Perbarui catatan kehadiran
         $attendance->time_out = $request->time_out;
         $attendance->status = $status;
         $attendance->save();

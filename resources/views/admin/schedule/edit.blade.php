@@ -23,7 +23,10 @@
                                 </option>
                             @endforeach
                         </select>
-                        {{-- <small class="form-text text-muted">Silakan pilih nama karyawan</small> --}}
+                        {{-- Pesan error jika ada kesalahan validasi --}}
+                        @error('id_employee')
+                            <small class="form-text text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
 
@@ -58,7 +61,9 @@
                             <option value="siang" {{ $schedule->shift == 'siang' ? 'selected' : '' }}>Siang</option>
                             <option value="malam" {{ $schedule->shift == 'malam' ? 'selected' : '' }}>Malam</option>
                         </select>
-                        {{-- <small class="form-text text-muted">Silakan pilih shift</small> --}}
+                        @error('shift')
+                            <small class="form-text text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
 
@@ -66,7 +71,7 @@
                     <label class="col-md-2 control-label col-form-label">Catatan</label>
                     <div class="col-md-10">
                         <input type="text" class="form-control" id="note" name="note"
-                            value="{{ old('note', $schedule->note) }}" required>
+                            value="{{ old('note', $schedule->note) }}">
                         @error('note')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
@@ -74,13 +79,13 @@
                 </div>
 
                 <div class="form-group row">
-                    <label class="col-md-2 control-label col-form-label"></label>
-                    <div class="col-md-10">
+                    <div class="col-md-10 offset-md-2">
                         <button type="submit" class="btn btn-primary btn-sm">Update Data</button>
                         <a class="btn btn-sm btn-default ml-1" href="{{ route('admin.schedule.index') }}">Kembali</a>
                     </div>
                 </div>
             </form>
+
 
         </div>
     </div>

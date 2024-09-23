@@ -70,8 +70,8 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a href="{{ url('/admin/swapshift') }}"
-                    class="nav-link {{ $activeMenu == 'swapshift' ? 'active' : '' }}">
+                <a href="{{ url('/admin/shift-changes') }}"
+                    class="nav-link {{ $activeMenu == 'shift-changes' ? 'active' : '' }}">
                     <i class="nav-icon fas fa-sync"></i>
                     <p>Ganti Shift</p>
                 </a>

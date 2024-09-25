@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Photography Portfolio</title>
+    <title>Sistem Informasi Pengelolaan Karyawan</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -44,6 +44,10 @@
         .hero p {
             font-size: 1.25rem;
             margin-bottom: 2rem;
+        }
+
+        .content-header {
+            /* background-color: rgba(255, 255, 255, .6); */
         }
 
         .btn-custom {
@@ -111,38 +115,41 @@
     <!-- Hero Section -->
     <section class="hero">
         <div class="container text-center">
-            <h1>Sistem Informasi Pengelolaan Karyawan</h1>
-            <p>Solusi terpadu untuk manajemen sumber daya manusia yang efisien.</p>
+            <div class="content-header">
+                <h1>Sistem Informasi Pengelolaan Karyawan</h1>
+                <p>Solusi terpadu untuk manajemen sumber daya manusia yang efisien.</p>
 
-            @if (Route::has('login'))
-                <div class="d-flex justify-content-center mt-4">
-                    @auth
-                        @if (Auth::user()->role === \App\Models\User::ROLE_ADMIN)
-                            <!-- Tombol untuk Admin Dashboard -->
-                            <a href="{{ route('admin.dashboard') }}" class="btn btn-primary me-2">
-                                Admin Dashboard
-                            </a>
+                @if (Route::has('login'))
+                    <div class="d-flex justify-content-center mt-4">
+                        @auth
+                            @if (Auth::user()->role === \App\Models\User::ROLE_ADMIN)
+                                <!-- Tombol untuk Admin Dashboard -->
+                                <a href="{{ route('admin.dashboard') }}" class="btn btn-primary me-2">
+                                    Admin Dashboard
+                                </a>
+                            @else
+                                <!-- Tombol untuk User Dashboard -->
+                                <a href="{{ route('terserah') }}" class="btn btn-primary me-2">
+                                    User Dashboard
+                                </a>
+                            @endif
                         @else
-                            <!-- Tombol untuk User Dashboard -->
-                            <a href="{{ route('user.dashboard') }}" class="btn btn-primary me-2">
-                                User Dashboard
+                            <!-- Tombol untuk Login -->
+                            <a href="{{ route('login') }}" class="btn btn-outline-light me-2">
+                                Log in
                             </a>
-                        @endif
-                    @else
-                        <!-- Tombol untuk Login -->
-                        <a href="{{ route('login') }}" class="btn btn-outline-light me-2">
-                            Log in
-                        </a>
 
-                        @if (Route::has('register'))
-                            <!-- Tombol untuk Register -->
-                            <a href="{{ route('register') }}" class="btn btn-light">
-                                Register
-                            </a>
-                        @endif
-                    @endauth
-                </div>
-            @endif
+                            @if (Route::has('register'))
+                                <!-- Tombol untuk Register -->
+                                <a href="{{ route('register') }}" class="btn btn-light">
+                                    Register
+                                </a>
+                            @endif
+                        @endauth
+                    </div>
+                @endif
+            </div>
+
         </div>
     </section>
 

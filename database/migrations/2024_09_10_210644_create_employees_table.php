@@ -13,17 +13,19 @@ return new class extends Migration
     {
         Schema::create('employees', function (Blueprint $table) {
             $table->id('id_employee');
-            $table->string('name');
+            // $table->string('name');
+            $table->unsignedBigInteger('id_user'); // Foreign key mengarah ke id_user
+            $table->unsignedBigInteger('id_position'); // Foreign key mengarah ke id_position
+            $table->unsignedBigInteger('id_department'); // Foreign key mengarah ke id_department
             $table->string('address');
             $table->string('gender');
             $table->string('no_hp');
-            $table->string('email')->unique();
-            $table->unsignedBigInteger('id_position'); // Foreign key mengarah ke id_position
-            $table->unsignedBigInteger('id_department'); // Foreign key mengarah ke id_department
+            // $table->string('email')->unique();
             $table->timestamps();
 
             $table->foreign('id_position')->references('id_position')->on('positions')->onDelete('cascade')->index();
             $table->foreign('id_department')->references('id_department')->on('departments')->onDelete('cascade')->index();
+            $table->foreign('id_user')->references('id_user')->on('users')->onDelete('cascade')->index();
         });
     }
 

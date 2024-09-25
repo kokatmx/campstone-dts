@@ -19,21 +19,17 @@
                     @csrf
                     @method('PUT')
                     <div class="form-group row">
-                        <label class="col-md-2 control-label col-form-label">Nama</label>
+                        <label class="col-md-2 control-label col-form-label">Nama Karyawan</label>
                         <div class="col-md-10">
-                            <input type="text" class="form-control" id="name" name="name"
-                                value="{{ $employee->name }}" required>
-                            @error('name')
-                                <small class="form-text text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label class="col-md-2 control-label col-form-label">Email</label>
-                        <div class="col-md-10">
-                            <input type="email" class="form-control" id="email" name="email"
-                                value="{{ $employee->email }}" required>
-                            @error('email')
+                            <select class="form-control" id="id_user" name="id_user" required>
+                                <option value="" disabled selected>-- Pilih Pengguna --</option>
+                                @foreach ($users as $user)
+                                    <option value="{{ $user->id_user }}"
+                                        {{ $employee->id_user == $user->id_user ? 'selected' : '' }}>
+                                        {{ $user->name }}</option>
+                                @endforeach
+                            </select>
+                            @error('id_user')
                                 <small class="form-text text-danger">{{ $message }}</small>
                             @enderror
                         </div>

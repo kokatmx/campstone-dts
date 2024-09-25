@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Position;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -26,11 +27,17 @@ class EmployeeController extends Controller
     public function list(Request $request)
     {
         try {
-            $employees = Employee::with('position', 'department')
-                ->select('id_employee', 'name', 'email', 'address', 'gender', 'no_hp', 'id_position', 'id_department');
+            $employees = Employee::with('position', 'department', 'user')
+                ->select('id_employee', 'id_user', 'address', 'gender', 'no_hp', 'id_position', 'id_department');
 
             return DataTables::of($employees)
                 ->addIndexColumn()
+                ->addColumn('user.name', function ($employee) {
+                    return $employee->user ? $employee->user->name : 'N/A';
+                })
+                ->addColumn('user.email', function ($employee) {
+                    return $employee->user ? $employee->user->email : 'N/A';
+                })
                 ->addColumn('position.name', function ($employee) {
                     return $employee->position ? $employee->position->name : 'N/A';
                 })
@@ -69,36 +76,36 @@ class EmployeeController extends Controller
         $activeMenu = 'employee';
         $positions = Position::all();
         $departments = Department::all();
-        return view('admin.employee.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'positions' => $positions, 'departments' => $departments]);
+        $users = User::all();
+        return view('admin.employee.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'positions' => $positions, 'departments' => $departments, 'users' => $users]);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
+            'id_user' => 'required|exists:users,id_user',
             'address' => 'required',
             'gender' => 'required',
             'no_hp' => 'required',
             'id_position' => 'required|exists:positions,id_position',
             'id_department' => 'required|exists:departments,id_department',
         ]);
-        Employee::create($request->all());
-        // $employee = new Employee();
-        // $employee->name = $request->input('name');
-        // $employee->email = $request->input('email');
-        // $employee->address = $request->input('address');
-        // $employee->gender = $request->input('gender');
-        // $employee->no_hp = $request->input('no_hp');
-        // $employee->id_position = $request->input('id_position');
-        // $employee->id_department = $request->input('id_department');
-        // $employee->save();
+
+        // Create the employee record, associating it with the existing user
+        Employee::create([
+            'id_user' => $request->id_user,
+            'address' => $request->address,
+            'gender' => $request->gender,
+            'no_hp' => $request->no_hp,
+            'id_position' => $request->id_position,
+            'id_department' => $request->id_department,
+        ]);
         return redirect()->route('admin.employee.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     public function show($id)
     {
-        $employee = Employee::with('position', 'department')->find($id);
+        $employee = Employee::with('position', 'department', 'user')->find($id);
         if (!$employee) {
             abort(404);
         }
@@ -115,7 +122,7 @@ class EmployeeController extends Controller
 
     public function edit($id)
     {
-        $employee = Employee::with('position', 'department')->find($id);
+        $employee = Employee::with('position', 'department', 'user')->find($id);
         if (!$employee) {
             abort(404);
         }
@@ -129,35 +136,33 @@ class EmployeeController extends Controller
         $activeMenu = 'employee';
         $positions = Position::all();
         $departments = Department::all();
-        return view('admin.employee.edit', ['employee' => $employee, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'positions' => $positions, 'departments' => $departments]);
+        $users = User::all();
+        return view('admin.employee.edit', ['users' => $users, 'employee' => $employee, 'breadcrumb' => $breadcrumb, 'page' => $page, 'activeMenu' => $activeMenu, 'positions' => $positions, 'departments' => $departments]);
     }
 
     public function update(Request $request, $id)
     {
-        $employee = Employee::find($id);
+        $employee = Employee::findOrFail($id);
         if (!$employee) {
             abort(404);
         }
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email',
+            'id_user' => 'required|exists:users,id_user',
             'address' => 'required',
             'gender' => 'required',
             'no_hp' => 'required',
             'id_position' => 'required|exists:positions,id_position',
             'id_department' => 'required|exists:departments,id_department',
         ]);
+        $employee->update([
+            'id_user' => $request->id_user,
+            'address' => $request->address,
+            'gender' => $request->gender,
+            'no_hp' => $request->no_hp,
+            'id_position' => $request->id_position,
+            'id_department' => $request->id_department,
+        ]);
 
-        $employee->update($request->all());
-
-        // $employee->name = $request->input('name');
-        // $employee->email = $request->input('email');
-        // $employee->address = $request->input('address');
-        // $employee->gender = $request->input('gender');
-        // $employee->no_hp = $request->input('no_hp');
-        // $employee->id_position = $request->input('id_position');
-        // $employee->id_department = $request->input('id_department');
-        // $employee->save();
         return redirect()->route('admin.employee.index')->with('success', 'Data berhasil diupdate');
     }
 

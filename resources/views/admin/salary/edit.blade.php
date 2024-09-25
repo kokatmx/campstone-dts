@@ -12,23 +12,26 @@
                 @method('PUT')
 
                 <div class="form-group row">
-                    <label for="name" class="col-md-1 col-form-label control-label">Nama Karyawan</label>
+                    <label for="id_employee" class="col-md-1 col-form-label control-label">Nama Karyawan</label>
                     <div class="col-md-11">
-                        <select name="name" id="name" class="form-control">
+                        <select name="id_employee" id="id_employee" class="form-control" disabled>
                             @foreach ($employees as $employee)
-                                <option value="{{ $employee->name }}"
-                                    {{ $salary->employee->name == $employee->name ? 'selected' : '' }}>
-                                    {{ $employee->name }}
+                                <option value="{{ $employee->user->name }}"
+                                    {{ $salary->employee->id_employee == $employee->id_employee ? 'selected' : '' }}>
+                                    {{ $employee->user->name }}
                                 </option>
                             @endforeach
                         </select>
+                        @error('id_employee')
+                            <small class="form-text text-danger">{{ $message }}</small>
+                        @enderror
                     </div>
                 </div>
                 <div class="form-group row">
                     <label class="col-1 control-label col-form-label">Gaji Pokok</label>
                     <div class="col-11">
                         <input type="number" class="form-control" id="basic_salary" name="basic_salary"
-                            value="{{ old('basic_salary', $salary->basic_salary) }}" required>
+                            value="{{ old('basic_salary', $salary->basic_salary) }}" readonly required>
                         @error('basic_salary')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror

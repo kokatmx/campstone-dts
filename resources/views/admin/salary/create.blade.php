@@ -10,15 +10,15 @@
             <form method="POST" action="{{ route('admin.salary.store') }}" class="form-horizontal">
                 @csrf
                 <div class="form-group row">
-                    <label for="employee" class="col-md-1 col-form-label control-label">Nama Karyawan</label>
+                    <label for="id_employee" class="col-md-1 col-form-label control-label">Nama Karyawan</label>
                     <div class="col-md-11">
                         <select name="id_employee" id="id_employee" class="form-control">
                             <option value="" disabled selected>-- Pilih Nama Karyawan --</option>
                             @foreach ($employees as $employee)
-                                <option value="{{ $employee->id_employee }}">{{ $employee->name }}</option>
+                                <option value="{{ $employee->id_employee }}">{{ $employee->user->name }}</option>
                             @endforeach
                         </select>
-                        @error('id_department')
+                        @error('id_employee')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
 
@@ -57,8 +57,7 @@
                 <div class="form-group row">
                     <label class="col-md-1 control-label col-form-label">Tunjangan</label>
                     <div class="col-md-11">
-                        <input type="number" class="form-control" id="allowances" name="allowances"
-                            value="{{ old('allowances') }}" required>
+                        <input type="number" class="form-control" id="allowances" name="allowances" required>
                         @error('allowances')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
@@ -67,8 +66,7 @@
                 <div class="form-group row">
                     <label class="col-md-1 control-label col-form-label">Potongan</label>
                     <div class="col-md-11">
-                        <input type="number" class="form-control" id="deductions" name="deductions"
-                            value="{{ old('deductions') }}">
+                        <input type="number" class="form-control" id="deductions" name="deductions" required>
                         @error('deductions')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror

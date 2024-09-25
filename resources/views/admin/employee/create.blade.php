@@ -10,16 +10,20 @@
             <form method="POST" action="{{ route('admin.employee.store') }}" class="form-horizontal">
                 @csrf
                 <div class="form-group row">
-                    <label class="col-md-2 control-label col-form-label">Nama</label>
+                    <label class="col-md-2 control-label col-form-label">Pengguna</label>
                     <div class="col-md-10">
-                        <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}"
-                            required>
-                        @error('name')
+                        <select class="form-control" id="id_user" name="id_user" required>
+                            <option value="" disabled selected>-- Pilih Pengguna --</option>
+                            @foreach ($users as $user)
+                                <option value="{{ $user->id_user }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('id_user')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
                     </div>
                 </div>
-                <div class="form-group row">
+                {{-- <div class="form-group row">
                     <label class="col-md-2 control-label col-form-label">Email</label>
                     <div class="col-md-10">
                         <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}"
@@ -28,12 +32,11 @@
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
                     </div>
-                </div>
+                </div> --}}
                 <div class="form-group row">
                     <label class="col-md-2 control-label col-form-label">Alamat</label>
                     <div class="col-md-10">
-                        <input type="text" class="form-control" id="address" name="address"
-                            value="{{ old('address') }}" required>
+                        <input type="text" class="form-control" id="address" name="address" required>
                         @error('address')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
@@ -55,8 +58,7 @@
                 <div class="form-group row">
                     <label class="col-md-2 control-label col-form-label">No HP</label>
                     <div class="col-md-10">
-                        <input type="text" class="form-control" id="no_hp" name="no_hp" value="{{ old('no_hp') }}"
-                            required>
+                        <input type="text" class="form-control" id="no_hp" name="no_hp" required>
                         @error('no_hp')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror

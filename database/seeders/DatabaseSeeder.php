@@ -25,20 +25,38 @@ class DatabaseSeeder extends Seeder
             'created_at' => now(),
             'updated_at' => now(),
         ]);
-
-        // Seed positions and departments first
-        // $this->call(class: [
-        //     PositionSeeder::class,
-        //     DepartmentSeeder::class,
-        // ]);
-
-        // // Seed employees and related tables
-        // \App\Models\Employee::factory(10)->create()->each(function ($employee) {
-        //     \App\Models\Salary::factory()->create(['id_employee' => $employee->id]);
-        //     \App\Models\Attendance::factory(5)->create(['id_employee' => $employee->id]);
-        //     \App\Models\Leave::factory(2)->create(['id_employee' => $employee->id]);
-        //     \App\Models\Schedule::factory(4)->create(['id_employee' => $employee->id]);
-        // });
+        User::factory()->create([
+            'name' => 'aiko',
+            'email' => 'aiko@example.com',
+            'password' => Hash::make('1234567890'),
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        User::factory()->create([
+            'name' => 'ben',
+            'email' => 'ben@example.com',
+            'password' => Hash::make('1234567890'),
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        User::factory()->create([
+            'name' => 'chloe',
+            'email' => 'chloe@example.com',
+            'password' => Hash::make('1234567890'),
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        User::factory()->create([
+            'name' => 'david',
+            'email' => 'david@example.com',
+            'password' => Hash::make('1234567890'),
+            'role' => 'user',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         DB::table('users')->insert([
             'name' => 'Admin AKU',
@@ -47,6 +65,25 @@ class DatabaseSeeder extends Seeder
             'role' => 'admin',
             'created_at' => now(),
             'updated_at' => now(),
+        ]);
+
+        DB::table('positions')->insert([
+            'name' => 'Programmer',
+            'description' => 'membuat software',
+            'basic_salary' => 8000000,
+        ]);
+        DB::table('positions')->insert([
+            'name' => 'Analis Sistem',
+            'description' => 'menganalisa sistem',
+            'basic_salary' => 9000000,
+        ]);
+        DB::table('departments')->insert([
+            'name' => 'Teknologi Informasi (IT)',
+            'description' => 'informasi teknologi',
+        ]);
+        DB::table('departments')->insert([
+            'name' => 'Keuangan',
+            'description' => 'mengatur uang',
         ]);
     }
 }

@@ -11,6 +11,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\ShiftSwapController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Middleware\AdminMiddleware;
+use App\Http\Middleware\UserMiddleware;
 use Illuminate\Support\Facades\Route;
 
 
@@ -147,12 +148,15 @@ Route::prefix('admin')->middleware(['auth', 'verified', AdminMiddleware::class])
         Route::get('/employee-position/{id_employee}', [SalaryController::class, 'getEmployeePosition']);
     });
 
-Route::get('/dashboard', [WelcomeController::class, 'userDashboard'])
+Route::prefix('user')
     ->middleware(['auth', 'verified'])
-    ->name('user.dashboard');
+    ->group(function () {
+        Route::get('dashboard', [WelcomeController::class, 'userDashboard'])->name('user.dashboard');
+        Route::get('schedule', [ScheduleController::class, 'showSchedule'])->name('user.schedule');
+    });
 
 // Route::get('/dashboard', function () {
-//     return view('dashboard');
+//     return view('user/dashboard');
 // })
 //     ->middleware(['auth', 'verified'])
 //     ->name('dashboard');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Employee;
 use App\Models\Position;
 use App\Models\Salary;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Yajra\DataTables\DataTables;
 
@@ -22,7 +23,7 @@ class SalaryController extends Controller
         $page = (object)[
             'title' => 'Data gaji karyawan yang tersimpan dalam sistem',
         ];
-        $salary = Salary::with('employee')->get();
+        $salary = Salary::with('employee.user')->get();
         $activeMenu = 'salary';
         return view('admin.salary.index', ['breadcrumb' => $breadcrumb, 'page' => $page, 'salary' => $salary, 'activeMenu' => $activeMenu]);
     }
@@ -37,7 +38,7 @@ class SalaryController extends Controller
             ->addIndexColumn()
             ->addColumn('employee.name', function ($salary) {
                 // Check if position relation exists
-                return $salary->employee ? $salary->employee->name : 'N/A';
+                return $salary->employee ? $salary->employee->user->name : 'N/A';
             })
             ->addColumn('aksi', function ($salary) {
                 $btn  = '<div class="d-flex align-items-center justify-content-center">';
@@ -69,8 +70,9 @@ class SalaryController extends Controller
         ];
         $employees = Employee::all();
         $positions = Position::all();
+        $users = User::all();
         $activeMenu = 'salary';
-        return view('admin.salary.create', ['breadcrumb' => $breadcrumb, 'page' => $page, 'employees' => $employees, 'positions' => $positions, 'activeMenu' => $activeMenu]);
+        return view('admin.salary.create', ['users' => $users, 'breadcrumb' => $breadcrumb, 'page' => $page, 'employees' => $employees, 'positions' => $positions, 'activeMenu' => $activeMenu]);
     }
 
     /**
@@ -109,7 +111,7 @@ class SalaryController extends Controller
      */
     public function show($id)
     {
-        $salary = Salary::with('employee')->find($id);
+        $salary = Salary::with('employee.user')->find($id);
         if (!$salary) {
             abort(404);
         }
@@ -129,7 +131,7 @@ class SalaryController extends Controller
      */
     public function edit($id)
     {
-        $salary = Salary::with('employee')->find($id);
+        $salary = Salary::with('employee.user')->find($id);
 
         if (!$salary) {
             return redirect()->route('admin.salary.index')->with('error', 'Data gaji tidak ditemukan');
@@ -142,8 +144,9 @@ class SalaryController extends Controller
             'title' => 'Edit Data Gaji Karyawan',
         ];
         $employees = Employee::all();
+        $users  = User::all();
         $activeMenu = 'salary';
-        return view('admin.salary.edit', ['breadcrumb' => $breadcrumb, 'page' => $page, 'salary' => $salary, 'employees' => $employees, 'activeMenu' => $activeMenu]);
+        return view('admin.salary.edit', ['users' => $users, 'breadcrumb' => $breadcrumb, 'page' => $page, 'salary' => $salary, 'employees' => $employees, 'activeMenu' => $activeMenu]);
     }
 
     /**
@@ -151,27 +154,29 @@ class SalaryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $salary = Salary::find($id);
+        $salary = Salary::findOrFail($id);
 
-        if (!$salary) {
-            return redirect()->route('admin.salary.index')->with('error', 'Data gaji tidak ditemukan');
-        }
+        $request->validate([
+            // 'id_employee' => 'required|exists:employees,id_employee',
+            'id_position' => 'required|exists:positions,id_position',
+            'allowances' => 'required|numeric',
+            'deductions' => 'nullable|numeric',
+        ]);
 
-        $employee_name = $request->input('name');
-        $employee = Employee::where('name', $employee_name)->first();
+        // Get the updated position and its basic salary
+        $position = Position::find($request->id_position);
 
-        if (!$employee) {
-            return redirect()->back()->with('error', 'Karyawan tidak ditemukan');
-        }
+        // Calculate the new total salary
+        $totalSalary = $position->basic_salary + $request->allowances - $request->deductions;
 
-        $salary->id_employee = $employee->id_employee;
-        $salary->basic_salary = $request->input('basic_salary');
-        $salary->allowances = $request->input('allowances');
-        $salary->deductions = $request->input('deductions');
-        $salary->total_salary = $salary->basic_salary + $salary->allowances - $salary->deductions;
-        $salary->save();
-
-        return redirect()->route('admin.salary.index')->with('success', 'Data berhasil diupdate');
+        $salary->update([
+            'id_employee' => $request->id_employee,
+            'basic_salary' => $position->basic_salary,
+            'allowances' => $request->allowances,
+            'deductions' => $request->deductions ?? 0,
+            'total_salary' => $totalSalary,
+        ]);
+        return redirect()->route('admin.salary.index')->with('success', 'Data gaji berhasil diupdate');
     }
 
     /**

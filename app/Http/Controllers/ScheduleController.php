@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\Schedule;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\DataTables;
 
 class ScheduleController extends Controller
@@ -245,5 +246,13 @@ class ScheduleController extends Controller
         } else {
             return 'early';
         }
+    }
+
+    public function showSchedule(Request $request)
+    {
+        $userId = Auth::user()->id_user; // Ambil ID user yang sedang login
+        $schedules = Schedule::where('id_employee', $userId)->get();
+
+        return view('user.schedule.index', compact('schedules'));
     }
 }

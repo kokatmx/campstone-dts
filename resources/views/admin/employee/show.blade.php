@@ -9,12 +9,12 @@
         <div class="card-body">
             <table class="table table-bordered">
                 <tr>
-                    <th>Nama</th>
-                    <td>{{ $employee->name }}</td>
+                    <th>Nama Karyawan</th>
+                    <td>{{ $employee->user->name }}</td>
                 </tr>
                 <tr>
                     <th>Email</th>
-                    <td>{{ $employee->email }}</td>
+                    <td>{{ $employee->user->email }}</td>
                 </tr>
                 <tr>
                     <th>Alamat</th>

@@ -30,7 +30,7 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
+                {{-- <div class="form-group row">
                     <label class="col-md-2 control-label col-form-label">Tanggal Mulai</label>
                     <div class="col-md-10">
                         <input type="date" class="form-control" id="start_date" name="start_date"
@@ -47,6 +47,17 @@
                         <input type="date" class="form-control" id="end_date" name="end_date"
                             value="{{ old('end_date', $schedule->end_date) }}" required>
                         @error('end_date')
+                            <small class="form-text text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                </div> --}}
+
+                <div class="form-group row">
+                    <label class="col-md-2 control-label col-form-label">Tanggal</label>
+                    <div class="col-md-10">
+                        <input type="date" class="form-control" id="start_date" name="start_date"
+                            value="{{ old('start_date', $schedule->start_date) }}" readonly>
+                        @error('start_date')
                             <small class="form-text text-danger">{{ $message }}</small>
                         @enderror
                     </div>

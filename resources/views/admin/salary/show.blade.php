@@ -10,7 +10,7 @@
             <table class="table table-bordered">
                 <tr>
                     <th>Nama Karyawan</th>
-                    <td>{{ $salary->employee->name }}</td>
+                    <td>{{ $salary->employee->user->name }}</td>
                 </tr>
                 <tr>
                     <th>Posisi</th>

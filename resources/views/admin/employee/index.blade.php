@@ -20,7 +20,7 @@
                     <thead>
                         <tr>
                             <th>Nomor</th>
-                            <th>Nama</th>
+                            <th>Nama Karyawan</th>
                             <th>Posisi</th>
                             <th>Departemen</th>
                             <th>Email</th>
@@ -62,7 +62,7 @@
                             searchable: true
                         },
                         {
-                            data: 'name',
+                            data: 'user.name',
                             className: "",
                             orderable: true,
                             searchable: true
@@ -80,7 +80,7 @@
                             searchable: true
                         },
                         {
-                            data: 'email',
+                            data: 'user.email',
                             className: "",
                             orderable: true,
                             searchable: true

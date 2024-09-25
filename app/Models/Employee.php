@@ -11,14 +11,18 @@ class Employee extends Model
     protected $table = 'employees';
     protected $primaryKey = 'id_employee';
     protected $fillable = [
-        'name',
-        'email',
         'address',
         'gender',
         'no_hp',
         'id_position',
         'id_department',
+        'id_user',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
+    }
     public function position()
     {
         return $this->belongsTo(Position::class, 'id_position', 'id_position');
@@ -45,6 +49,6 @@ class Employee extends Model
 
     public function attendance()
     {
-        return $this->hasMany(Attendance::class, 'id_attendance');
+        return $this->hasMany(Attendance::class, 'id_employee', 'id_employee');
     }
 }
